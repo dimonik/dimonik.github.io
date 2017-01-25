@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Запускаем LDAP-сервер на CentOS 7 используя 389&nbsp;Directory&nbsp;Server</title>
+				<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+                <div class="published">26 декабря 2016</div>
+                <h1>Запускаем LDAP-сервер на CentOS 7 используя 389 Directory Server</h1>
+                <hr>
+               
+                <p>Сегодня мы посмотрим, как запустить свой <a href="http://pro-ldap.ru/tr/zytrax/ch2/">LDAP</a>-сервер на CentOS 7 с помощью <a href="http://directory.fedoraproject.org/">389 Directory Server</a>.</p>
+                
+                <b>Основные этапы:</b><br>
+                <ul>
+                    <li>Скачать необходимые инструменты</li>
+                    <li>Запустить среду</li>
+                    <li>Внести изменения в настройки системы</li>
+                    <li>Запустить LDAP-сервер</li>
+                </ul>
+                
+
+                <p>Вначале нужно поставить <a href="https://www.vagrantup.com/">Vagrant</a>. Для его работы необходим VirtualBox. Найти его можно <a href="https://www.virtualbox.org/wiki/Downloads">здесь</a>.</p>
+                
+                <p>Дальше ставим сам Vagrant следующей командой:</p>
+                <pre># apt-get install vagrant</pre>
+               
+                <p>Теперь нам нужно скачать '<a href="https://www.vagrantup.com/docs/boxes.html">коробку</a>', то есть среду. Мы будем использовать <a href="https://www.centos.org/">CentOS 7</a>:</p>
+                <pre># vagrant box add centos/7</pre>
+                
+                <p>Создаём папку, внутри неё запускаем терминал и выполняем:</p>
+                <pre># vagrant init</pre>
+                <p>Команда сгенерирует для нас файл 'Vagrant', в котором нужно поменять значение поля '<i>config.vm.box</i>' на <i>"centos/7"</i> и добавить строку <i>config.vm.network "private_network", ip: "192.168.50.4"</i>.</p>
+                
+                <p>Дальше нам нужно запустить нашу виртуальную машину. В директории с файлом 'Vagrant':</p>
+                <pre># vagrant up</pre>
+                <p>На это может уйти несколько минут. Далее, входим в консоль машины:</p>
+                <pre># vagrant ssh</pre>
+                
+                <!-- FILE CHANGES -->
+                <p>Открываем файл <i>'/etc/hosts'</i>:</p>
+                <pre># vi /etc/hosts</pre>
+                <p>и дописываем локальный адрес:</p>
+                <pre>192.168.50.4&nbsp;&nbsp;&nbsp;server.ldap.local&nbsp;&nbsp;&nbsp;testserver</pre>
+                
+                <p>Аналогично дописываем в конце файлов: <br><i>'/etc/sysctl.conf'</i>:</p>
+                <pre>net.ipv4.tcp_keepalive_time = 300<br>net.ipv4.ip_local_port_range = 1024 65000<br>fs.file-max = 64000</pre>
+                <p><i>'/etc/security/limits.conf'</i>:</p>
+                <pre>*&nbsp;&nbsp;&nbsp;soft&nbsp;&nbsp;&nbsp;nofile&nbsp;&nbsp;&nbsp;8192<br>*&nbsp;&nbsp;&nbsp;hard&nbsp;&nbsp;&nbsp;nofile&nbsp;&nbsp;&nbsp;8192</pre>
+                <p><i>'/etc/profile'</i>:</p>
+                <pre>ulimit -n 8192</pre>
+                <p>и <i>'/etc/pam.d/login'</i>:</p>
+                <pre>session&nbsp;&nbsp;&nbsp;required&nbsp;&nbsp;&nbsp;/lib/security/pam_limits.so</pre>
+                <!-- FILE CHANGES -->
+                
+                
+                <p>Далее нам нужно устанавить репозиторий <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a>:</p>
+                <pre># yum install epel-release</pre>
+                
+                <p>При настройке сервера мы можем воспользоваться нашим текущим пользователем, но лучше создать нового:</p>
+                <pre># useradd ldap<br># passwd ldap</pre>
+                
+                <p>Теперь устанавливаем сам сервер и запускаем его настройку:</p>
+                <pre># yum install 389-ds-base 389-admin<br># setup-ds-admin</pre>
+                
+                <p>Перед нами появится программа настройки. Нам нужно задать значения следующим полям:<br>
+                    <i>Computer name</i>: 'server.ldap.local'<br>
+                    <i>System User [dirsrv]</i>: 'ldap'<br>
+                    <i>System Group [dirsrv]</i>: 'ldap'<br>
+                    Для всех остальных, кроме полей с вводом пароля, просто нажимаем Enter, оставляя стандартные значения.
+                </p>
+                
+                <p>По окончанию мы должны увидеть следующее:</p>
+                <img src="../img/ldap_success.png"><br><br>
+                
+                <p>Готово! Теперь мы можем проверить работоспособность LDAP-сервера выполнив команду:</p>
+                <pre># ldapsearch -x -b "dc=ldap,dc=local"</pre>
+
+		<p>Для более удобного управления сервером можем воспользоваться утилитой 389-console:</p>
+                <pre># yum install 389-console<br># 389-console</pre>                
+
+		<p>Если при работе с ней будут возникать ошибки, то необходимо поместить содержимое этого <a href="https://www.dropbox.com/s/mxinroozr41fboh/jars.tar.gz?dl=0">архива</a> в папку <i>'/home/null'</i>.</p>
+
+                <br><br><br>
+                ССЫЛКИ:<br>
+                <ol>
+                    <li>Вкратце о <a href=https://interface31.ru/tech_it/2011/01/sluzhby-katalogov-chast-1-obshhie-ponyatiya.html>службе каталогов</a>;</li>
+                    <li>Теория <a href="http://pro-ldap.ru/tr/zytrax/ch2/">LDAP</a>.</li>
+                </ol>
+                <br>
+                <br>
+                <br>
+
+                <h3>Автор</h3>
+                © Yevhenii<br>
+                <br>
+			</div>
+		</div>
+    </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css">
+		<title>Как создать кластер с контейнерами для java-приложений используя Minikube</title>
+				<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+                <div class="published">21 декабря 2016</div>
+                <h1>Как создать кластер с контейнерами для java-приложений используя Minikube</h1>
+                <hr>
+                <p>Сегодня мы разберёмся, как создать свой кластер для java-приложений используя <a href="https://github.com/kubernetes/minikube">Minikube</a> - инструмент для локального запуска Kubernetes.</p>
+                
+                <b>Основные этапы:</b><br>
+                <ul>
+                    <li>Скачать необходимые инструменты</li>
+                    <li>Запустить кластер локально</li>
+                    <li>Создать образ java-приложения</li>
+                    <li>Развернуть приложение в кластере</li>
+                    <li>Протестировать его доступность</li>
+                </ul>
+
+                <p>Для работы Minikube необходимо скачать и установить VirtualBox. Найти его можно <a href="https://www.virtualbox.org/wiki/Downloads">здесь</a>.</p>
+                
+                <p>Далее устанавливаем сам Minikube:</p>
+                <pre># curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/</pre>
+                
+                <p>И <a href="https://docs.docker.com/engine/getstarted/">Docker</a>, инструмент, который мы будем использовать для создания образа нашего приложения:</p>
+                <pre># apt-get install docker</pre>
+                
+                <p>Запускаем Minikube:</p>
+                <pre># minikube start</pre>
+                
+                <p>Видим виртуальную машину с операционной системой Boot2Docker. Она и является нашим кластером с одним узлом.</p>
+                <img src="../img/minikube_boot2docker.png"><br><br>
+                
+                <p>Следующим шагом будет упаковка и запуск приложения. Воспользуемся уже готовым spring-проектом.</p>
+                <pre># git clone https://github.com/dimonik/minikube.git<br># cd minikube<br># mvn package</pre>
+                
+                <p>Заходим в папку <i>/minikube/target</i> и создаём файл с названием <i>'Dockerfile'</i>, который должен содержать в себе следующее:</p>
+                <pre>FROM java:8<br>MAINTAINER Letiko letiko@letiko.com<br>ADD tutorial-0.0.1-SNAPSHOT.jar tutorial.jar<br>EXPOSE 8080<br>ENTRYPOINT ["java","-jar","tutorial.jar"]</pre>
+                
+                <p>В этой же папке открываем консоль. Теперь нам нужно создать образ приложения. Но для того чтобы он был создан и для виртуальной машины, выполняем команду:</p>
+                <pre># eval #(minikube docker-env)</pre>
+                
+                <p>При создании образа необходимо обратить внимание на то, что название, которое следует после тега <i>'-t'</i> может быть любым, однако оно должно содержать в себе суффикс <i>':v'</i>. Иначе на следующих шагах могут возникнуть проблемы из-за того, что Minikube будет пытаться найти образ исключительно в интернете, а нам этого не нужно.</p>
+                <pre># docker build -t tutorial-app:v1 .</pre>
+            
+                <p>Далее <a href="http://kubernetes.io/docs/user-guide/kubectl/kubectl_run/">разворачиваем</a> созданное приложение в кластере:</p>
+                <pre># kubectl run test-deployment --image=tutorial-app:v1 --port=8080 --replicas=1</pre>
+                <p>Название (<i>test-deployment</i>) может быть произвольным,<br> '<i>image</i>' - имя нашего образа, созданного на предыдущем шаге,<br> '<i>port</i>' - порт для текущего java-приложения,<br> '<i>replicas</i>' - количество <a href="http://kubernetes.io/docs/user-guide/replicasets/">реплик</a>, а соответственно и <a href="http://kubernetes.io/docs/user-guide/pods/">pod</a>'ов.</p>
+                
+                <p>Вот мы и запустили наше приложение внтури кластера. Однако сейчас оно доступно лишь в его пределах:</p>
+                <img src="../img/minikube_curlNoService.png"><br><br>
+                
+                <p>Это может быть приемлемо, если приложение выполняет какую-то внутреннюю логику, и никому извне не нужно знать о его существовании. Мы же хотим увидеть его, потому создаём <a href="http://kubernetes.io/docs/user-guide/services/">сервис</a>:</p>
+                <pre># kubectl expose deployment test-deployment --target-port=8080 --type=NodePort</pre>
+                <p>По умолчанию установлен тип сервиса '<i>ClusterIP</i>', что делать его доступным лишь в пределах кластера. Мы выбираем '<i>NodePort</i>', чтобы получить доступ к нашему приложению. Больше про типы можно почитать в статье про сервисы по ссылке выше.</p>
+
+                <p>Всё, что мы проделали, можно увидеть в стандартной панели от Kubernetes. Там же, во вкладке '<i>Services</i>', есть порт нашего сервиса, который задаётся случайным образом, и который следует изменить в дальнейшем.</p>
+                <pre># minikube dashboard</pre>
+                <img src="../img/minikube_dashboard.png"><br><br>
+                
+                <p>Проверяем наше приложение, переходим по адресу <i>192.168.99.100:31663</i> и видим:</p>
+                <img src="../img/minikube_hello.png">
+
+                <p>Вот и всё, мы запустили наше java-приложение в кластере.</p>
+                <br><br><br>
+                ССЫЛКИ:<br>
+                <ol>
+                    <li>Теория <a href="http://kubernetes.io/docs/tutorials/kubernetes-basics/">Kubernetes basics</a>;</li>
+                    <li>Руководство <a href="http://kubernetes.io/docs/user-guide/">Kubernetes guides</a>.</li>
+                </ol>
+                <br>
+                <br>
+                <br>
+
+                <h3>Автор</h3>
+                © Yevhenii<br>
+                <br>
+			</div>
+		</div>
+    </body>
+</html>

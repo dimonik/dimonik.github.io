@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>IoT проект: Управляемый через WEB индикатор на 8 цифр</title>
+		<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">1 августа 2016</div>
+<h1>IoT проект: Управляемый через WEB индикатор на 8 цифр</h1>
+<hr>
+
+<p>В прошлый раз мы сделали <a href="http://letiko.com/blog/Arduino8digitsDisplay.html">индикатор на котором можно показывать восемь цифр</a>. Но чтобы сказать ему какую цифру отобразить нам надо постоянно перезаливать программу через Arduino IDE, что очень неудобно.<br />
+Можно добавить в arduino-скетч код который будет слушать данные через <a href="https://www.arduino.cc/en/Reference/Serial">Serial-интерфейс</a> и сообщать ему число используя Serial Monitor.<br />
+А что если пойти дальше и сделать настоящий IoT-проект?! Пусть наш индикатор будет подключен к Интернет, а управлять им будет маленькое web-приложение, работающее в браузере.</p>
+
+<b>Вам понадобится:</b><br />
+<ul>
+<li>Собранный индикатор с нашего прошлого проекта</li>
+<li>Любая из плат линейки Raspberry Pi</li>
+<li>Карта microSD минимум на 2 ГБ для Raspberry Pi</li>
+<li>Источник питания DC 5 вольт, 2 ампера</li>
+<li>USB кабель для соединения Arduino-Raspberry</li>
+<li>Подключаемый к USB адаптер Wi-Fi</li>
+<li>RJ45 кабель Компьютер-Маршрутизатор</li>
+<li>Соединительные провода</li>
+</ul>
+
+<h3>Настройка Raspberry Pi</h3>
+<p>
+Возьмите карту microSD и установите на нее операционную систему <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a>.<br />
+Тут подробно расписано <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#SD_card_setup">как готовить</a> карту памяти.<br />
+Как только карта памяти готова, вставьте ее в Raspi, подключите Raspi к вашему домашнему маршрутизатору используя RJ45 кабель.<br />
+Теперь подключайте Raspi к источнику питания. Если карта памяти была подготовлена правильно то Raspi успешно загрузится.<br />
+Все готово для подключения к Raspi через SSH. Чтобы настроить SSH на вашем ноутбуке следуйте инструкциям:
+<ul>
+<li><a href="https://www.raspberrypi.org/documentation/remote-access/ssh/unix.md">Linux &amp; Mac OS</a></li>
+<li><a href="https://www.raspberrypi.org/documentation/remote-access/ssh/windows.md">Windows</a></li>
+<li><a href="https://www.raspberrypi.org/documentation/remote-access/ssh/ios.md">iOS</a></li>
+<li><a href="https://www.raspberrypi.org/documentation/remote-access/ssh/android.md">Android</a></li>
+</ul>
+Далее <a href="http://www.penguintutor.com/linux/light-webserver">нужно выполнить</a> базовые настройки ОС, Сети и установить программы:
+<ul>
+<li>web-сервер Lighttpd</li>
+<li>интерпретатор Python3</li>
+<li>сервер файлов ProFTP</li>
+<li>менеджер пакетов python3-pip</li>
+<li>через pip установить pySerial</li>
+</ul>
+В папку Lighttpd /var/www/html/ нужно поместить эти файлы <a href="https://github.com/dimonik/iot_8digits_display/tree/master/forWebserver">web-приложения</a>.<br />
+Далее все что остается это запустить <a href="https://github.com/dimonik/iot_8digits_display/blob/master/forRaspberry/rfc6455_server_for_Ardu_control.py">Python3-код</a> на Raspi.<br />
+</p>
+
+<h3>Настройка Arduino</h3>
+<p>
+Установите <a href="https://www.arduino.cc/en/Main/Software">Arduino IDE.</a><br />
+Подключите Arduino к USB порту вашего ноутбука.<br />
+Используйте <a href="https://github.com/dimonik/iot_8digits_display/blob/master/forArduino/8%20digits%20number%20recieving%20and%20display%20it.cpp">этот код</a> для прошивки микроконтроллера. Используя IDE залейте код в плату.<br />
+На индикаторе должно отображаться число <b>12345678</b>.<br />
+Если вдруг отображается что-то другое или вообще не видно цифр, проверьте внимательно все проводки и соединения.
+</p>
+
+<p>
+<h3>Полная сборка проекта</h3>
+<p>
+Отключите теперь все от питания и соберите компоненты согласно схеме:<br />
+<img src="../img/iot_8digit_display_schematics.png" style="width: 1000px;"><br />
+Arduino подключите к Raspberry тем же самым USB кабелем который вы используете для соединения с ноутбуком.<br />
+Для питания Arduino и Raspi мы используем <b>один и тот же</b> источник питания.<br />
+Питание к Arduino подключайте через barrel jack, 5 вольт.<br />
+Питание к Raspi идет через MicroUSB разъем, 5 вольт.<br />
+Обе линии питания имеют общее соединение.<br />
+Подсоедините Raspi к маршрутизатору через сетевой кабель со штекером RJ45 либо используйте <a href="http://letiko.com/blog/BBBwithWiFi.html">Wi-Fi адаптер</a> подключаемый к USB.
+</p>
+<h3>Как это работает?</h3>
+<p>
+Когда вы открываете в браузере IP адрес Raspi, web-сервер выдаст страницы web-приложения которые отобразят UI для управления индикатором:<br />
+<b>192.168.1.2</b>&#8596;<b>Lighttpd</b>&#8596;<b>WEB-app</b><br />
+На UI есть кнопка Connect, по нажатию на которую JavaScript-код установит соединение с Raspi по протоколу Web Socket.<br />
+<b>WEB-app</b>&#8596;<b>Web Socket</b>&#8596;<b>Python3 code</b><br />
+На Raspi код на Python3 примет Web Socket соединение.<br />
+Дальше в UI есть поле для ввода числа и кнопка Send. По нажатию на нее web-приложение отправит frame на нашу Raspi. После обработки фрейма, python3-код откроет Serial соединение к Arduino и передаст по-байтам число. Дальше скетч уже просто его отобразит.
+</p>
+
+<p>
+<h3>Что у нас получилось</h3>
+Индикатор в действии:<br />
+<iframe src="../img/iot_8digit_display.MP4" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<br /><br />
+Все вместе в сборе с Wi-Fi адаптером:<br />
+<img src="../img/iot_8digits_display_all_together.jpg" style="width: 1000px;">
+</p>
+
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>

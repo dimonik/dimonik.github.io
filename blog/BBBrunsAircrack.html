@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Подбор пароля к Wi-Fi сети используя атаку по словарю</title>
+		<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">21 июня 2016</div>
+<h1>Подбор пароля к Wi-Fi сети используя атаку по словарю</h1>
+<hr>
+<p>В прошлый раз <a href="http://letiko.com/blog/BBBwithWiFi.html">мы подключили </a> Wi-Fi адаптер к микрокомпьютеру <a href="https://www.element14.com/community/docs/DOC-54121">BeagleBoneBlack</a>.</p>
+
+
+<p>Пришло время узнать возможности этой штучки!</p>
+<br />
+
+<b>Основные этапы:</b><br />
+<ul>
+<li>Настроить тестовую Wi-Fi сеть на маршрутизаторе</li>
+<li>Подключить к ней различные Wi-Fi устройства-клиенты</li>
+<li>Выполнить все шаги для набора утилит aircrack-ng</li>
+</ul>
+
+<div class="panel"></p>
+<h3>Исключительно в образовательных целях!</h3>
+<p>Автор напоминает, что вся представленная в статье информация опубликована исключительно в образовательных целях. Несанкционированный доступ к компьютерным системам и сетям преследуется по закону. Не нарушай закон!
+</div>
+
+<p>Чтобы провести подбор пароля тебе собственно нужна тестовая Wi-Fi сеть доступная в радиусе приема антенны микрокомпьютера.
+Возьми свой маршрутизатор и настрой новую Wi-Fi сеть на канале 2.4 ГГц, пропиши ее имя (то есть BSSID) и задай пароль.<br />
+Подключи к этой сети устройства, например свой смартфон и планшет.</p>
+
+На своем ПК с системой Linux запусти терминал.<br />
+Выполни соединение с BeagleBoneBlack:<br />
+<pre>
+$ ssh root@192.168.1.59
+</pre>
+
+<p>Теперь задача состоит в том чтобы установить набор утилит для работы с безопасностью беспроводных сетей. Почему-то образ kali-2.1.2-bbb.img не содержит среди установленных нужный нам пакет aircrack-ng. Сделав поиск по репозиториям Debian (системы на которой основана Kali) ты найдешь что искомый <a href="https://packages.debian.org/wheezy-backports/aircrack-ng">пакет aircrack-ng</a> лежит в репозитории wheezy-backports.</p>
+
+<p>Значит надо добавить его в список источников для менеджера пакетов apt, выполни:<br />
+<pre>
+# nano /etc/apt/sources.list
+</pre>
+виден список репозиториев:
+<img src="../img/0_apt_sources.png">
+тебе нужно удалить символ комментария '#'
+с первой строки в которой есть слово wheezy-backports.<br />
+После чего сохранить (Ctrl+O) и выйти (Ctrl+X).</p>
+
+Обнови списки доступных приложений:<br />
+<pre>
+# apt-get update
+</pre>
+
+Установи наборчик волшебных утилит:<br />
+<pre>
+# apt-get install aircrack-ng
+</pre>
+
+<p>Перед запуском aircrack-ng лучше перевести Wi-Fi интерфейс wlan0 в режим 'ручного' управления.
+Открой файл:
+<pre>
+# nano /etc/network/interfaces
+</pre>
+и добавь такую строку:
+<pre>
+iface wlan0 inet manual
+</pre>
+сохрани и выйди из редактора nano.</p>
+<br />
+
+<p>Теперь можно заняться делом :)<br />
+Переключи Wi-Fi адаптер в режим мониторинга:
+<pre>
+airmon-ng start wlan0
+</pre>
+Видно что режим монитора включен на интерфейсе mon1:<br />
+<img src="../img/1_airmon_start_wlan0.png"><br />
+В столбце PID указаны номера процессов которые могут мешать нормальной работе утилит из набора aircrack-ng.</p>
+Если с ними ничего не сделать, то можно поймать вот такую ошибку если выполнить:
+<pre>
+# airodump-ng --encrypt WPA2 wlan0
+</pre>
+<img src="../img/2_airodump_error.png"><br />
+На снимке видно что некоторые процессы могут мешать работе airodump-ng:<br />
+</p>
+
+
+<pre>
+ioctl(SIOCSIWMODE) failed: Device or resource busy
+
+ARP linktype is set to 1 (Ethernet) - expected ARPHRD_IEEE80211,
+ARPHRD_IEEE80211_FULL or ARPHRD_IEEE80211_PRISM instead.  Make
+sure RFMON is enabled: run 'airmon-ng start wlan0 <#>'
+Sysfs injection support was not found either.
+</pre>
+
+<p>Чаще всего эту ошибку вызывают посторонние процессы использующие интерфейс wlan0.
+Чтобы убрать лишние, можно воспользоваться командой:
+<pre>
+# kill 606
+</pre>
+где 606 - это номер процесса который следует завершить. Так нужно сделать для каждого конкурирующего с нами процесса.</p>
+<br />
+
+<p>Давай теперь посмотрим что у нас происходит в радиодиапазоне :
+<pre>
+# airodump-ng --encrypt WPA2 wlan0
+</pre>
+<img src="../img/3_airodump_radiospectrum.png">
+
+Сделай скриншот и заверши процесс airodump-ng нажав Ctrl+C.<br />
+Допустим твоя Wi-Fi сеть это 'Homeinet', в таблице на экране найдешь все ее параметры.
+Обрати внимание на столбицы BSSID и CH. Там указан MAC адрес точки и канал на котором она работает. Запиши его.
+Колонка STATION показывает всех клиентов зацепившихся за выбранную тобой точку.</p>
+
+<br />
+
+<p>Выбери цель - точку доступа Wi-Fi. Чтобы начать сбор фреймов и рукопожатий для нее, введи:
+<pre>
+# airodump-ng -w air_dump -c 13 --bssid BC:XX:XX:XX:XX:XX wlan0
+</pre>
+где:<br />
+-w air_dump - это префикс названия для файлов дампа которые создаст утилита;<br />
+-c 13 - это канал на котором работает выбраная сеть Homeinet;<br />
+-bssid BC:XX:XX:XX:XX:XX - это MAC адрес целевой точки (пароль от которой тебе нужно подобрать);<br />
+</p>
+
+<p>В этот момент есть два пути: либо ждать пока клиент подключится сам и произойдет 4-стороннее рукопожатие, или принудительно де-аутентифицировать любого уже подключенного клиента и этим заставить его переподключиться.
+Если сидеть и ждать не твое, тогда давай действовать активно. Запусти еще одно окно терминала на своем ПК и выполни дополнительное подключение к BeagleBoneBlack:
+<pre>
+$ ssh root@192.168.1.59
+</pre>
+Второе окно терминала тебе нужно для выполнения deauth-атаки клиентов выбраной станции. Это вынудит клиентов переподключиться и в этот момент они заново сделают рукопожатие с точкой Wi-Fi, чего мы и добиваемся.
+</p>
+
+<p>В столбце STATION выбери любой MAC адрес который тебе нравится,
+сейчас мы заставим его отключиться от точки.<br />
+<pre>
+# aireplay-ng -0 1 -a BC:XX:XX:XX:XX:XX -c 24:XX:XX:XX:XX:XX wlan0 --ignore-negative-one
+</pre>
+Эта команда отправит в эфир 64 DeAuth фрейма от имени точки доступа, которые получит указанный клиент:<br />
+<img src="../img/4_aireplay_deauth_attack.png"></p>
+
+<p>
+Реакция на DeAuth фреймы различается для разных операционных систем и работающих в них драйверах Wi-Fi.<br />
+Например если выполнить в точности эту команду то:
+<ul>
+<li>устройство на iOS 9.3.2 через секунды само переподключается к точке;</li>
+<li>устройство на Android 6.0.1_june01 само НЕ переподключается, нужно ждать действия пользователя по вкл/выкл Wi-Fi.</li>
+</ul>
+</p>
+
+<p>Теперь внимательно следи за первым окном терминала, как только справа-вверху мелькнет [WPA handshake:...]
+это значит что рукопожатие было поймано. Заверши процесс airodump-ng нажав Ctrl+C.</p>
+
+<p>Теперь все что тебе нужно это запустить полный перебор паролей по словарю. Подбирать пароли легче на мощном ПК, маленький BeagleBoneBlack не для этого.</p>
+
+<p>По аналогии тому как ты делал для микрокомпьютера - установи на ПК пакет aircrack-ng.</p>
+
+<p>Вытащи записанный на микрокомпьютере файлик-дамп с рукопожатиями, на своем ПК выполни:
+<pre>
+$ scp root@192.168.1.59:/root/air_dump-01.cap .
+</pre>
+В твоей текущей папке на ПК теперь лежит файлик air_dump-01.cap</p>
+<p>Подготовь в этой же папке текстовый файлик с названием "passwordlist" с вариантами паролей: одна строка - один пароль. Обязательно укажи в нем настоящий пароль от целевой точки Wi-Fi. Так как это атака по словарю - то мы перебираем все известные пароли, а не взламываем.</p>
+<p>Если готов, то запускай на своем ПК:
+<pre>
+$ aircrack-ng -w passwordlist -c *.cap
+</pre>
+Когда программа перепробует все пароли из файлика и какой-нибудь подойдет - ты увидишь приятное сообщение:
+<img src="../img/5_aircrack_success.png"><br />
+Оно означает что один пароль из файла passwordlist подошел и его можно использовать для подключения к целевой точке Wi-Fi.<p>
+
+<p>Сколько времени тебе ждать?<br />
+Смотри, минимальная длинна пароля для WPA2 это 8 символов.
+В случае такого минимального пароля состоящего только из цифр (10 штук) и английских букв - прописные (26 штук) плюс строчные (26 штук) - компьютеру надо опробовать 26+26+10 = 62 варианта для каждого символа.
+Так как символов 8-мь получаем 62^8 = 62*62*62*62*62*62*62*62 = 218340105584896. То есть 218 триллионов с чем-то вариантов.
+При скорости подбора 954 ключа в секунду на моем процессоре уйдет <a href="http://www.wolframalpha.com/input/?i=(((((62%5E8)%2F954)%2F3600)%2F24)%2F365)">~7257</a> лет.
+</p>
+<br />
+<br />
+ССЫЛКИ:<br />
+<ol>
+<li>Теория <a href="https://habrahabr.ru/post/122623/">4-way handshake</a>;</li>
+<li>Как пользоваться <a href="http://aircrack-ng.org/doku.php?id=cracking_wpa">набором aircrack-ng</a>;</li>
+<li>Kali <a href="http://tools.kali.org/wireless-attacks/aircrack-ng">описание опций утилит aircrack-ng</a>;</li>
+<li>Пример <a href="ftp://download.openwall.net/pub/wordlists/">словаря passwordlist</a>;</li>
+<li>Можно ли с этим <a href="http://security.stackexchange.com/questions/81478/how-to-stop-programs-like-airodump-ng-from-seing-my-clients-mac-id-and-sending">бороться</a>;</li>
+<li>Большое <a href="http://www.smallnetbuilder.com/wireless/wireless-howto/31914-how-to-crack-wpa-wpa2-2012"> руководство о том же</a>;</li>
+<li>Ускорение перебора с помощью <a href="https://habrahabr.ru/post/122553">видеокарты</a>.</li>
+</ol>
+<br />
+<br />
+<br />
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>

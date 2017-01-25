@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Как очистить метаданные изображений</title>
+		<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">18 июня 2016</div>
+<h1>Как очистить метаданные изображений</h1>
+<hr>
+
+<img src="../img/metadata.jpg">
+<br /><br />
+<p>Задумывался ли о том как много твоей личной информации утекает в Сеть?
+Каждая опубликованная фотография, картинка, документ - все содержат помимо основного контента еще и так называемые метаданные.
+То есть определенные данные ДОПОЛНИТЕЛЬНО к основному содержимому.</p>
+<p>Что в них сокрыто? Время когда сделана фотография, место и географические координаты, различные правки с указанием всех графических редакторов которые ты мог использовать и еще куча различной идентифицирующей информации.
+В общем более чем достаточно чтоб узнать о тебе много подробностей.</p>
+<p>Сегодня я хочу рассказать как можно очищать метаданные основных графических файлов.</p>
+<br />
+<b>Тебе понадобятся:</b><br />
+<ul>
+<li>ПК под управлением Ubuntu или другого Linux-дистрибутива</li>
+<li>Работающий интернет</li>
+</ul>
+<br />
+Первым делом обнови содержимое репозиториев:<br />
+<pre>
+$ sudo apt-get update
+</pre>
+<br />
+Установи утилиту для работы с метаданными:<br />
+<pre>
+$ sudo apt-get install exiftool
+</pre>
+<br />
+Перейди в папку со своими картинками и выполни команду:<br />
+<pre>
+$ exiftool -a -G1 -s image_name.jpg
+</pre>
+Ты увидишь множество различных строк и значений - это и есть пресловутые "метаданные".<br />
+Например:<br />
+<pre>
+ExifTool Version Number         : 9.46
+File Name                       : image_name.jpg
+Directory                       : .
+File Size                       : 915 kB
+File Modification Date/Time     : 2016:01:16 16:49:38+02:00
+File Access Date/Time           : 2016:03:12 17:01:56+02:00
+File Inode Change Date/Time     : 2016:03:12 17:01:56+02:00
+File Permissions                : rw-r--r--
+File Type                       : JPEG
+MIME Type                       : image/jpeg
+Exif Byte Order                 : Big-endian (Motorola, MM)
+Make                            : Apple
+Camera Model Name               : iPhone 6s
+Orientation                     : Horizontal (normal)
+X Resolution                    : 72
+Y Resolution                    : 72
+Resolution Unit                 : inches
+Software                        : 9.3.1
+Modify Date                     : 2016:04:16 16:49:39
+Y Cb Cr Positioning             : Centered
+Exposure Time                   : 1/121
+F Number                        : 2.2
+Exposure Program                : Program AE
+ISO                             : 32
+Exif Version                    : 0221
+Date/Time Original              : 2016:01:16 16:49:39
+Create Date                     : 2016:01:16 16:49:39
+Components Configuration        : Y, Cb, Cr, -
+Shutter Speed Value             : 1/121
+Aperture Value                  : 2.2
+Brightness Value                : 6.437424058
+Exposure Compensation           : 0
+Metering Mode                   : Average
+Flash                           : Auto, Did not fire
+Focal Length                    : 2.7 mm
+Run Time Flags                  : Valid
+Run Time Value                  : 86976561050125
+Run Time Epoch                  : 0
+Run Time Scale                  : 1000000000
+HDR Image Type                  : HDR Image
+Sub Sec Time Original           : 098
+Sub Sec Time Digitized          : 098
+Flashpix Version                : 0100
+Color Space                     : sRGB
+Exif Image Width                : 2576
+Exif Image Height               : 1932
+Sensing Method                  : One-chip color area
+Scene Type                      : Directly photographed
+Custom Rendered                 : Unknown (3)
+Exposure Mode                   : Auto
+White Balance                   : Auto
+Focal Length In 35mm Format     : 31 mm
+Scene Capture Type              : Standard
+Lens Info                       : 2.65mm f/2.2
+Lens Make                       : Apple
+Lens Model                      : iPhone 6s front camera 2.65mm f/2.2
+GPS Latitude Ref                : North
+GPS Longitude Ref               : East
+GPS Altitude Ref                : Above Sea Level
+GPS Time Stamp                  : 14:49:38
+GPS Speed Ref                   : km/h
+GPS Speed                       : 0
+GPS Img Direction Ref           : True North
+GPS Img Direction               : 86.24124514
+GPS Dest Bearing Ref            : True North
+GPS Dest Bearing                : 266.2412281
+GPS Date Stamp                  : 2016:04:16
+GPS Horizontal Positioning Error: 5 m
+Compression                     : JPEG (old-style)
+Thumbnail Offset                : 1460
+Thumbnail Length                : 10110
+XMP Toolkit                     : XMP Core 5.4.0
+Region Area Y                   : 0.373151, 0.797114
+Region Area W                   : 0.243441, 0.148919
+Region Area X                   : 0.568037, 0.387304
+Region Area H                   : 0.330683, 0.211437
+Region Area Unit                : normalized, normalized
+Region Type                     : Face, Face
+Region Extensions Angle Info Yaw: 0
+Region Extensions Angle Info Roll: 0
+Region Extensions Confidence Level: 1000
+Region Extensions Time Stamp    : 2087441716639
+Region Extensions Face ID       : 7
+Region Applied To Dimensions H  : 1932
+Region Applied To Dimensions W  : 2576
+Region Applied To Dimensions Unit: pixel
+Image Width                     : 2576
+Image Height                    : 1932
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Aperture                        : 2.2
+GPS Altitude                    : 509.9 m Above Sea Level
+GPS Date/Time                   : 2016:04:16 14:49:38Z
+GPS Latitude                    : 47 deg 34' 21.31" N
+GPS Longitude                   : 16 deg 27' 8.60" E
+GPS Position                    : 47 deg 34' 21.31" N, 16 deg 27' 8.60" E
+Image Size                      : 2576x1932
+Run Time Since Power Up         : 24:09:36
+Scale Factor To 35 mm Equivalent: 11.7
+Shutter Speed                   : 1/121
+Create Date                     : 2016:01:16 16:49:39.098
+Date/Time Original              : 2016:01:16 16:49:39.098
+Thumbnail Image                 : (Binary data 10110 bytes, use -b option to extract)
+Circle Of Confusion             : 0.003 mm
+Field Of View                   : 60.3 deg
+Focal Length                    : 2.6 mm (35 mm equivalent: 31.0 mm)
+Hyperfocal Distance             : 1.24 m
+Light Value                     : 10.8
+</pre>
+<br />
+Ужас правда?<br />
+Ничего, выход есть! Выполни:<br />
+<pre>
+$ exiftool -overwrite_original -all= image_name.jpg
+</pre>
+Результат этой команды примерно будет таким:<br />
+<pre>
+[ExifTool]      ExifToolVersion                 : 9.46
+[System]        FileName                        : image_name.jpg
+[System]        Directory                       : .
+[System]        FileSize                        : 901 kB
+[System]        FileModifyDate                  : 2016:06:18 16:23:29+02:00
+[System]        FileAccessDate                  : 2016:06:18 16:23:30+02:00
+[System]        FileInodeChangeDate             : 2016:06:18 16:23:29+02:00
+[System]        FilePermissions                 : rw-r--r--
+[File]          FileType                        : JPEG
+[File]          MIMEType                        : image/jpeg
+[File]          ImageWidth                      : 2576
+[File]          ImageHeight                     : 1932
+[File]          EncodingProcess                 : Baseline DCT, Huffman coding
+[File]          BitsPerSample                   : 8
+[File]          ColorComponents                 : 3
+[File]          YCbCrSubSampling                : YCbCr4:2:0 (2 2)
+[Composite]     ImageSize                       : 2576x1932
+</pre>
+<br />
+Вот и все! Утилита exiftool перезаписала метаданные, вырезав излишние детали.<br />
+То что осталось - безобидный минимум, таким файлом теперь можно (почти) без опасений делиться в Интернет.<br />
+<br />
+<br />
+P.S.<br />
+<ul>
+	<li><a href="https://github.com/dimonik/erase_pics_metadata/blob/master/erase_meta_folder.sh">Этот bash-скрипт</a> умеет очищать метаданные у всей папки с картинками<br /></li>
+	<li><a href="http://owl.phy.queensu.ca/~phil/exiftool/faq.html">Exiftool FAQ</a></li>
+	<li>Ваши метаданные это действительно <a href="https://www.eff.org/deeplinks/2013/06/why-metadata-matters">важно</a></li>
+</ul>
+<br />
+<br />
+<br />
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>

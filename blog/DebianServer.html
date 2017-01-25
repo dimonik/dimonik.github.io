@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Свой почтовый сервер на базе Linux и свободных приложений</title>
+		<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+<body>
+<div class="page">
+<div class="container">
+<div class="header">
+<a href="http://letiko.com/blog/index.html" class="header-element">
+Home
+</a>
+</div>
+<div class="published">3 октября 2013</div>
+<h1>*TBD* Свой почтовый сервер на базе Linux и свободных приложений</h1>
+<hr>
+
+<p>Рано или поздно приходится позаботиться о безопасности вашей переписки,<br />
+стоит ли доверять бесплатным сервисам, когда можно сделать свой собственный?</p>
+<br />
+<p><a href="#s1">Что вам понадобится</a>:</p>
+<ul>
+<li>купить имя домена (часть адреса @something.com) на который будет приходить почта</li>
+<li>интернет провайдер у которого есть услуга "публичный IP-адрес"</li>
+<li>надёжный интернет канал</li>
+<li>маршрутизатор с функцией проброса портов</li>
+<li>простой но надёжный компьютер, который можно оставить постоянно работающим и который не жалко поставить в кладовку</li>
+</ul>
+<br />
+<h3 id="s1">Что вам понадобится</h3>
+<p>Купить имя домена можно в любой компании, желательно с мировым именем:
+<a href="https://www.namecheap.com/">Namecheap</a>, <a href="http://moniker.com/">Moniker</a>, <a href="http://www.godaddy.com/">Go Daddy</a>.<br />
+Интернет провайдер подойдёт любой из вашего региона, лишь бы у него была услуга "публичный IP-адрес" и скоростной, качественный канал.<br />
+Маршрутизатор - любой: D-Link, TP-Link, ASUS - главное чтоб была функция проброса портов.<br />
+Компьютер нужен экономный, маленький и надёжный. Например Acer Aspire|X XC-105 или подобный.<br />
+</p>
+<br />
+<p>Теперь, по шагам:</p>
+<ol>
+<li>
+<a href="#s1_0">Создание установочного диска / флешки</a><br />
+<ol>
+<li><a href="#s1_1">загрузка образа ОС</a></li>
+<li><a href="#s1_2">запись образа на диск / флешку</a></li>
+</ol>
+</li>
+<br />
+<li>
+<a href="#s2_0">Установка и настройка ОС Debian</a><br />
+<ol>
+<li><a href="#s2_1">разбивка диска на разделы</a></li>
+<li><a href="#s2_2">LVM</a></li>
+<li><a href="#s2_3">шифрование диска</a></li>
+<li><a href="#s2_4">сеть и DNS</a></li>
+<li><a href="#s2_5">пользователи и пароли</a></li>
+<li><a href="#s2_6">обновления</a></li>
+<li><a href="#s2_7">время</a></li>
+<li><a href="#s2_8">локаль</a></li>
+</ol>
+</li>
+<br />
+<li>
+<a href="#s3_0">Установка и настройка служб и приложений</a><br />
+<ol>
+<li><a href="#s3_1">SSH</a></li>
+<li><a href="#s3_2">Uncomplicated FireWall (ufw)</a></li>
+<li><a href="#s3_3">Fail2ban</a></li>
+<li><a href="#s3_4">Logwatch</a></li>
+<li><a href="#s3_5">HTTP-сервер Apache</a></li>
+</ol>
+</li>
+<br />
+<li>
+<a href="#s4_0">Система коллективной работы Kolab</a>
+</li>
+<br />
+<li>
+<a href="#s5_0">Усиливаем безопасность Debian</a>
+</li>
+</ol>
+<br />
+
+
+<h3 id="s1_0">Создание установочного диска / флешки</h3>
+<p>
+Для нашего сервера нужна очень стабильная, надёжная и предсказуемая операционная система,<br />
+идеальный кандидат Debian Wheezy. Нет это не единственный возможный выбор, но точно один из лучших.<br />
+</p>
+<h4 id="s1_1">загрузка образа ОС</h4>
+<p>Пожалейте сервера проекта Debian, используйте для загрузки образа торрент-клиент.<br />
+Если у вас 64 бит процессор Intel или AMD, то качать нужно этот образ <a href="http://cdimage.debian.org/debian-cd/8.5.0/amd64/bt-cd/debian-8.5.0-amd64-CD-1.iso.torrent">debian-8.5.0-amd64-CD-1.iso</a></p>
+
+<h4 id="s1_2">запись образа на диск / флешку</h4>
+<p>Используя программу для записи CD дисков запишите скачанный .iso файл на диск. Скорость записи выберите самую маленькую - так будет надёжнее.<br />
+Если у вас есть флешка на 4 ГиБ и более, то можно записать образ на неё. Для этого есть специальная программа <a href="http://unetbootin.sourceforge.net/">UNetbootin</a>.
+</p>
+
+<h3 id="s2_0">Установка и настройка ОС Debian</h3>
+
+<h4 id="s2_1">разбивка диска на разделы</h4>
+<p></p>
+
+<h4 id="s2_2">LVM</h4>
+<p></p>
+
+<h4 id="s2_3">шифрование диска</h4>
+<p></p>
+
+<h4 id="s2_4">сеть и DNS</h4>
+<p></p>
+
+<h4 id="s2_5">пользователи и пароли</h4>
+<p>Ваше первое действие на сервере - это СМЕНИТЬ ПАРОЛЬ. Выполните:<br />
+<pre>
+$ passwd
+</pre>
+Введите новый пароль дважды и нажмите Enter.<br />
+<br />
+Суперпользователя root у нас не будет, запретим его. Обычный же пользователь будет иметь доступ к команде sudo после ввода хорошего пароля.<br />
+Меняем пароль root и в то же время блокируем эту учетку:<br />
+<pre>
+$ sudo su
+# passwd --lock root
+# passwd
+# passwd -S
+root L 12/08/2016
+</pre>
+буква L означает что вы не сможете входить как root напрямую или использовать команду su чтобы переключиться на пользователя root.
+<a href="https://help.ubuntu.com/community/RootSudo">Больше знаний о суперпользователе</a>.
+</p>
+<h4 id="s2_6">обновления</h4>
+Обновите списки пакетов и установленные программы:
+<p>
+<pre>
+$ sudo apt-get update
+$ sudo apt-get upgrade
+</pre>
+</p>
+
+<h4 id="s2_7">время</h4>
+<p>Для сервера время лучше задать в часовом поясе UTC+00:00.<br />
+Чтобы проверить время введите команду:
+<pre>
+$ date
+Fri Aug 12 09:11:34 UTC 2016
+</pre>
+Чтобы задать новое время:<br />
+<pre>
+$ date --set 2016-08-12
+$ date --set 21:00:00
+</pre>
+Больше о настройке времени <a href="https://wiki.debian.org/DateTime">читайте тут</a>.
+</p>
+
+<h4 id="s2_8">локаль</h4>
+<p>Выполните команду
+<pre>
+$ locale
+</pre>
+чтобы узнать какая локаль задана для текущего пользователя. Затем используйте команду:
+<pre>
+sudo dpkg-reconfigure locales
+</pre>
+чтобы задать ту локаль, которая вам нужна.
+Например, по-умолчанию en_US.UTF-8 и дополнительно вашу региональную, например de_DE.UTF-8.
+</p>
+
+<h3 id="s3_0">Установка и настройка служб и приложений</h3>
+<h4 id="s3_1">SSH</h4>
+<p>
+<a href="https://packages.debian.org/wheezy/openssh-server">SSH server</a> это программа позволяющая безопасно, удалённо управлять сервером.<br />
+Настроим SSH так чтобы войти на сервер можно было используя только публичные ключи,
+а вход как суперпользователь и вход с вводом пароля были запрещены.<br />
+И конечно вход будет разрешен только для конкретных IP адресов:<br />
+<pre>
+$ sudo apt-get install openssh-server
+sudo nano /etc/ssh/sshd_config
+</pre>
+Добавьте эти строки в файл, указывайте тот IP адрес скоторого будет осуществляться вход:
+<pre>
+PermitRootLogin no
+PasswordAuthentication no
+AllowUsers deploy@(your-ip) deploy@(another-ip-if-any)
+</pre>
+Добавьте в файл authorized_keys содержимое файла id_rsa.pub с вашего рабочего ПК и другие публичные ключи с которыми будет разрешен доступ на этот сервер.
+<pre>sudo nano /home/deploy/.ssh/authorized_keys
+sudo chmod 400 /home/deploy/.ssh/authorized_keys
+sudo chown deploy:deploy /home/deploy -R</pre>
+Выполните перезапуск службы
+<pre>service ssh restart</pre>
+</p>
+<br />
+
+<h4 id="s3_2">Uncomplicated FireWall (ufw)</h4>
+<p><a href="https://packages.debian.org/wheezy/ufw">ufw</a> это программа для упрощенной настройки стандартного для Linux межсетевого экрана iptables.<br />
+Это базовые настройки для системы Kolab разрешающие трафик на перечисленные порты. Настройте дополнительные порты если нужно.
+<pre>$ sudo apt-get install ufw
+ufw allow from {your-ip} to any port 22
+ufw allow 25
+ufw allow 80
+ufw allow 110
+ufw allow 143
+ufw allow 389
+ufw allow 443
+ufw allow 465
+ufw allow 587
+ufw allow 636
+ufw allow 993
+ufw allow 995
+ufw enable
+</pre>
+Больше о настройке ufw <a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-14-04">читайте тут</a>.
+</p>
+<br />
+
+<h4 id="s3_3">Fail2ban</h4>
+<p><a href="https://packages.debian.org/wheezy/Fail2ban">Fail2ban</a> это служба которая мониторит попытки входа на сервер и
+блокирует подозрительную активность при её обнаружении. Настроек по-умолчанию достаточно.<br />
+<pre>$ sudo apt-get install fail2ban</pre>
+</p>
+<br />
+
+<h4 id="s3_4">Logwatch</h4>
+<p><a href="https://packages.debian.org/wheezy/logwatch">Logwatch</a> это служба которая мониторит логи сервера и отправляет вам их по почте. 
+Это полезно для отслеживания и определения вторжений. 
+Если кто-то заходил на сервер, отправленные вам по почте логи
+будут полезными для понимания что случилось и когда
+- учитывая что логи оставшиеся на сервере могли быть скомпрометированны.
+<pre>
+$ sudo apt-get install logwatch
+</pre>
+В файл
+<pre>
+sudo nano /etc/cron.daily/00logwatch
+</pre>
+добавьте строку:
+<pre>
+/usr/sbin/logwatch --output mail --mailto test@gmail.com --detail high
+</pre>
+</p>
+<br />
+
+<h4 id="s3_5">HTTP-сервер Apache (если нужен)</h4>
+<p>Apache это программа веб-сервер, именно она отвечает пользователю когда он вводит имя вашего сайта в браузере.<br />
+На Apache работают большинство сайтов сети Интернет.
+<pre>
+sudo apt-get update
+sudo apt-get install apache2
+</pre>
+<a href="https://www.digitalocean.com/community/tutorials/how-to-configure-the-apache-web-server-on-an-ubuntu-or-debian-vps">Тут общая настройка</a>.
+<a href="https://www.digitalocean.com/community/tutorials/apache-ubuntu-14-04-lts-ru">Тут настройка виртуальных хостов</a>.
+<br />
+Для безопасности, лучше когда сервер не рассказывает посторонним о том какой у него номер версии и какая ОС использована:
+<pre>
+$ sudo nano /etc/apache2/conf-enabled/security.conf
+ServerTokens Prod
+ServerSignature Off
+</pre>
+</p>
+<br />
+
+<h3 id="s4_0">Система коллективной работы Kolab</h3>
+<p><a href="http://docs.kolab.org/installation-guide/index.html">инструкция по установке Kolab</a></p>
+<br />
+
+<h3 id="s5_0">Усиливаем безопасность Debian</h3>
+<p><a href="http://www.debian.org/doc/manuals/securing-debian-howto/index.en.html#contents">Securing Debian Manual</a></p>
+<p><a href="http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers">My first 5 minutes on a server</a></p>
+<br>
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+</div>
+</div>
+</body>
+</html>

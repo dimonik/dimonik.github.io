@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Как запустить проект jBilling на Ubuntu</title>
+				<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+                <div class="published">24 декабря 2016</div>
+                <h1>Как запустить проект jBilling на Ubuntu</h1>
+                <hr>
+                <p>В этот раз мы разберёмся с настройкой и запуском проекта <a href="http://www.jbilling.com/">jBilling</a> на Ubuntu 16.04.</p>
+                
+                <b>Основные этапы:</b><br>
+                <ul>
+                    <li>Скачать необходимые инструменты</li>
+                    <li>Настроить базу данных</li>
+                    <li>Запустить проект</li>
+                </ul>
+
+                <p>Сначала скачаем необходимые инструменты:</p>
+                <ol>
+                    <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java</a> (крайне желательно установить версию 1.8.0_60)</li>
+                    <li><a href="http://ant.apache.org/bindownload.cgi">Apache Ant</a></li>
+                    <li><a href="https://grails.org/download.html">Grails</a> (нужна версия 2.4.3)</li>
+                    <li><a href="http://www.enterprisedb.com/products-services-training/pgdownload">PostgreSQL</a> (обычно установлена по умолчанию в Ubuntu)</li>
+                </ol>
+                <p>Для установки Ant, Grails, PostgreSQL можно воспользоваться следующими командами:</p>
+                <pre>$ apt-get install ant<br><br>$ curl -s "https://get.sdkman.io" | bash<br>$ source "$HOME/.sdkman/bin/sdkman-init.sh"<br>$ sdk install grails 2.4.3<br><br>$ apt-get install postgresql-9.4</pre>
+                
+                <p>Проверяем корректность установки, выполнив следующие команды:</p>
+                <pre>$ java -version<br>$ ant -version<br>$ grails -version</pre>
+                
+                <p>В случае с Grails возможна ситуация, что при выполнении любой его команды (в т.ч. -version) консоль просто очищается. Вероятнее всего проблема связана с тем, что переменная среды $JAVA_HOME не установлена, либо была установлена вручную.</p> 
+                <p>В первом случае всё предельно просто, открываем файл <i>/etc/environment</i> и добавляем строку <i>JAVA_HOME="/usr/lib/jvm/open-jdk"</i> (у вас путь может отличаться). Выполняем команду:</p>
+                <pre>$ source /etc/environment</pre>
+                <p>Во втором же случае необходимо открыть файл <i>$GRAILS_HOME/bin/startGrails</i> и найти фрагмент:</p>
+                <pre>if [ -z "$JAVA_HOME" ] ; then<br>      die "JAVA_HOME environment variable is not set"</pre>
+                <p>который нужно убрать либо заменить на:</p>
+                <pre>if [ -z "$JAVA_HOME" ] ; then<br>      echo "JAVA_HOME environment variable is not set"</pre>
+                
+                <p>Добавляем базу данных в PostgreSQL:</p>
+                <pre>$ createdb jbilling_test -U postgres</pre>
+                <p>где <i>'-U'</i> - имя пользователя в PostgreSQL</p>
+                
+                <p>Теперь нам необходимо скачать сам проект в двух версиях: <a href="https://sourceforge.net/projects/jbilling/files/jbilling%20Latest%20Stable/jbilling-4.1.1/jbilling-community-4.1.1.zip/download">binary</a> и <a href="https://sourceforge.net/projects/jbilling/files/jbilling%20Latest%20Stable/jbilling-4.1.1/jbilling-community-4.1.1-src.zip/download">source</a>, а затем разархивировать их в любое удобное место. В binary-проекте в папке <i>/jbilling</i> находится файл <i>'jbilling.properties'</i>. Копируем его в source-проект в паку <i>/src/java</i>.</p>
+                
+                <p>Запускаем IntelliJ IDEA и выбираем <i>'Import Project'</i>. Везде нажимаем 'далее'. После открытия проекта в верхней панели выбираем <i>Tools->Grails->Synchronize Grails settings</i>. Это может занять пару минут. Тем временем открываем файл <i>/src/java/CheckDBConnection.java</i> и настраиваем доступ к нашей базе данных. Можем запустить его и проверить.</p>
+                
+                <p>По завершении синхронизации у нас появится второй модуль в IDEA. Теперь можем запустить проект: <i>Run->Run 'Grails:jbilling'</i>. Если появляются ошибки '<i>Cannot copy non-root method</i>', то нужно поставить версиию Java указанную выше.</p>
+                
+                <p>Сам сервис станет доступен по адресу: <a href="http://localhost:8080/jbilling">localhost:8080/jbilling</a></p>
+                
+                <p>Для запуска через консоль переходим в папку с source-проектом и выполняем файл <i>run-app.sh</i>, которому предварительно нужно дать разрешение на выполнение.</p>
+                
+                <p>Вот мы и разобрались с запуском проекта jBilling.</p>
+                
+                <br><br><br>
+
+                <h3>Автор</h3>
+                © Yevhenii<br>
+                <br>
+			</div>
+		</div>
+    </body>
+</html>

@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Arduino проект: Индикатор на 8 цифр</title>
+		<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">25 июля 2016</div>
+<h1>Arduino проект: Индикатор на 8 цифр</h1>
+<hr>
+
+<p>Сегодня мы соберем индикатор, на котором можно отобразить восемь десятичных цифр. Почему же именно восемь? Во-первых, так мы сможем увидеть как работают в паре микросхемы 74HC595.
+Во-вторых, восьми разрядов как раз хватает для отображения одного байта, что может быть полезным во многих других проектах, особенно при передаче данных через <a href="https://www.arduino.cc/en/Reference/Serial">Serial</a>.
+<br /><br />
+Благодаря микросхемам 74HC595 мы сможем задействовать лишь 7мь выводов микроконтроллера, а без микросхем нужно было бы использовать 20ть.
+</p>
+
+<b>Вам понадобится:</b><br />
+<ul>
+<li>Практически любая плата от Arduino</li>
+<li>2шт Микросхемы 74HC595 любого производителя, например ST</li>
+<li>4шт Резисторы 3300 Ом</li>
+<li>16шт Резисторы 470 Ом</li>
+<li>4шт NPN-транзисторы 2N3904 или UTC PN2222</li>
+<li>2шт 4-разрядные 7-сегментные индикаторы с общим катодом</li>
+<li>Соединительные провода</li>
+<li>3шт Макетные платы</li>
+</ul>
+<br /><br />
+
+Соберите схему согласно картинке:<br /><br />
+<img src="../img/Arduino8digitsDisplay_schematics.png">
+<br /><br />
+
+Установите <a href="https://www.arduino.cc/en/Main/Software">Arduino IDE.</a>
+<br /><br />
+<p>
+Подключите плату к USB порту вашего ноутбука.<br />
+Используйте <a href="https://github.com/dimonik/Arduino8digitsDisplay/blob/master/Arduino8digitsDisplay.ino">этот код</a> для прошивки микроконтроллера. Используя IDE залейте код в плату.<br />
+На индикаторе должно отображаться число <b>12345678</b>.<br />
+Если вдруг отображается что-то другое или вообще не видно цифр, проверьте внимательно все проводки и соединения.
+</p>
+<br />
+<p>
+<h3>Как это работает?</h3>
+Семисегментный индикатор состоит из сегментов которые обозначены латинскими буквами:<br />
+<img src="../img/Arduino8digitsDisplay_segments_labels.png"><br />
+Чтобы включить сегмент нужно отправить высокий уровень напряжения на анод(+) этого сегмента, а общий катод(-) индикатора подключить к минусу источника питания.<br />
+Таким образом, отображаемая цифра состоит из сегментов, каждый из которых закодирован в программе вот так:
+<pre>
+byte d0 = 0b00000001; //seg A
+byte d1 = 0b00000010; //seg F 
+byte d2 = 0b00000100; //seg B
+byte d3 = 0b00001000; //seg G
+byte d4 = 0b00010000; //seg C
+byte d5 = 0b00100000; //seg dot
+byte d6 = 0b01000000; //seg D
+byte d7 = 0b10000000; //seg E
+</pre>
+В любой из переменных d0...d7 хранится один байт, записанный побитово (после префикса 0b) так, что каждый бит кодирует включение
+или выключение одного сегмента индикатора, а комбинация включенных сегментов образует соответствующий символ-цифру которую и видит человек.
+<br />
+<br />
+</p>
+
+<p>
+<h3>Что у нас получилось</h3>
+Видео:<br />
+<iframe src="https://player.vimeo.com/video/178025352" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<br /><br />
+Фото 1:
+<img src="../img/Arduino8digitsDisplay_photo1.jpg">
+<br /><br />
+Фото 2:
+<img src="../img/Arduino8digitsDisplay_photo2.jpg">
+<br /><br />
+Фото 3:
+<img src="../img/Arduino8digitsDisplay_photo3.jpg">
+</p>
+
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>

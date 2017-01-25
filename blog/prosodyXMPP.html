@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css">
+		<title>Запускаем XMPP-сервер Prosody</title>
+				<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+                <div class="published">02 января 2017</div>
+                <h1>Запускаем XMPP-сервер Prosody</h1>
+                <hr>
+               
+                <p>Сегодня мы разберёмся, как запустить XMPP-сервер <a href="https://prosody.im/">Prosody</a> в Centos 7 используя <a href="https://www.vagrantup.com/">Vagrant</a>.</p>
+                
+                <b>Основные этапы:</b><br>
+                <ul>
+                    <li>Скачать необходимые инструменты</li>
+                    <li>Запустить среду</li>
+                    <li>Настроить сервер</li>
+                    <li>Проверить работоспособность</li>
+                </ul>
+                
+                <p>Вначале нужно поставить Vagrant. Для его работы необходим VirtualBox. Найти его можно <a href="https://www.virtualbox.org/wiki/Downloads">здесь</a>.</p>
+                
+                <p>Дальше ставим сам Vagrant следующей командой:</p>
+                <pre># apt-get install vagrant</pre>
+               
+                <p>Теперь нам нужно скачать нашу среду. Мы будем использовать <a href="https://www.centos.org/">CentOS 7</a>:</p>
+                <pre># vagrant box add centos/7</pre>
+                
+                <p>Создаём папку, внутри неё запускаем терминал и выполняем:</p>
+                <pre># vagrant init</pre>
+                <p>Команда сгенерирует для нас файл 'Vagrant', в котором нужно поменять значение поля '<i>config.vm.box</i>' на <i>"centos/7"</i> и добавить строку <i>config.vm.network "forwarded_port", guest: 5222, host: 5222</i>.</p>
+                
+                <p>Дальше нам нужно запустить нашу виртуальную машину. В директории с файлом 'Vagrant':</p>
+                <pre># vagrant up</pre>
+                <p>На это может уйти несколько минут. Далее, входим в консоль машины:</p>
+                <pre># vagrant ssh</pre>
+                
+                <p>Теперь нам нужно устанавить репозиторий <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a>:</p>
+                <pre># yum install epel-release</pre>
+                
+                <p>И сам сервер:</p>
+                <pre># yum install prosody</pre>
+                
+                <p>Все настройки задаются в файле '<i>/etc/prosody/prosody.cfg.lua</i>'. Нам необходимо внести следующие изменения в пункте <i>ssl</i>:</p>
+                <pre>ssl = {<br>key = "/etc/prosody/certs/localhost.key";<br>certificate = "/etc/prosody/certs/localhost.cert";<br>protocol = "sslv23";<br>dhparam = "/etc/prosody/certs/dh-2048.pem";<br>}</pre>
+                <p>и добавить в конец файла:</p>
+                <pre>VirtualHost "letiko.loc"<br>VirtualHost "xmpp.letiko.loc"</pre>
+                
+                <p>Теперь мы можем запустить сервер и добавить несколько пользователей:</p>
+                <pre># prosodyctl start<br># prosodyctl adduser user_first@letiko.loc<br># prosodyctl adduser user_second@letiko.loc</pre>
+                
+                <p>Чтобы подключиться к серверу мы будем использовать кроссплатформенное приложение <a href="https://gajim.org/downloads.php">Gajim</a>. Для пользователей Android существует <a href="https://play.google.com/store/apps/details?id=com.xabber.android">Xabber</a>.</p>
+                
+                <p>При первом запуске перед нами появится окно для входа в аккаунт:</p>
+                <img src = "../img/prosody_login.png"><br><br>
+                <p>Сюда мы вводим данные одного из пользователей, созданных ранее.</p>
+                
+                <p>Всё, мы подключились к нашему серверу и теперь можем добавить других пользователей в список контактов, чтобы начать беседу.</p>
+                <br><br><br>
+                ССЫЛКИ:<br>
+                <ol>
+                    <li>Документация <a href="https://prosody.im/doc">Prosody</a></li>
+                </ol>
+                <br>
+                <br>
+                <br>
+
+                <h3>Автор</h3>
+                © Yevhenii<br>
+                <br>
+			</div>
+		</div>
+    </body>
+</html>

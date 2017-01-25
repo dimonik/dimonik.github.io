@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Letiko - Football 2012 Application</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="Letiko">
+<!-- Styles -->
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<!--[if lt IE 7]>
+    <link href="css/fontello-ie7.css" type="text/css" rel="stylesheet">  
+<![endif]-->
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<!-- Favicon -->
+<link rel="shortcut icon" href="img/favicon.ico">
+<!-- JQuery -->
+<script type="text/javascript" src="js/jquery.js"></script>
+<!-- Load ScrollTo -->
+<script type="text/javascript" src="js/jquery.scrollTo-1.4.2-min.js"></script>
+<!-- Load LocalScroll -->
+<script type="text/javascript" src="js/jquery.localscroll-1.2.7-min.js"></script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter38288850 = new Ya.Metrika({
+                id:38288850,
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true
+            });
+        } catch(e) { }
+    });
+
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body>
+<!--******************** NAVBAR ********************-->
+<div class="navbar-wrapper">
+<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar-inner">
+  <div class="container">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+    <!-- <a class="icon-angle-left" style="color:#fff; font-weight:400; font-size:32px; line-height:50px; margin-left:10px" href="index.php#portfolio"></a> -->
+    <!-- <h1 class="brand"><a href="index.htm#portfolio">L</a></h1>-->
+		<a class="back-button" id="white" href="index.htm#portfolio">Back</a>
+    <nav class="pull-right nav-collapse collapse">
+      <ul id="menu-main" class="nav">
+        <!-- <li><a title="back" href="index.php#portfolio">Back</a></li> -->
+        <li><a title="about" href="#feature">About</a></li>
+        <li><a title="features" href="#featuresdetail1">features</a></li>
+        <!-- <li><a title="team" href="index.php#team">Team</a></li> -->
+        <!-- <li><a title="contact" href="#contact">Contact</a></li> -->
+      </ul>
+    </nav>
+
+  </div>
+  <!-- /.container -->
+</div>
+<!-- /.navbar-inner -->
+</div>
+<!-- /.navbar -->
+</div>
+<!-- /.navbar-wrapper -->
+<!-- ******************** HeaderWrap ********************-->
+<section id="item-headerwrap" style="background: url(img/fb_header.jpg) #0b333f no-repeat center center;">
+  <header style="position:absolute; width:100%; margin-top: -50px;">
+    <div class="container">
+    <div class="headline item" style="width:auto; padding: 0 20px">FOOTBALL 2012</div>
+    <!-- <h1 style="position:absolute">DRIVING RULES</h1> -->
+    <blockquote class="mega" style="padding-right: 10px; padding-left:0;text-shadow: 0 0 10px rgba(0, 0, 0, 0.6); ">
+        <p>We are the champions, my friends</p>
+        <p>And we'll keep on fighting till the end</p>
+        <div class="cite">Queen</div>
+    </blockquote>
+    </div>
+</header>
+</section>
+<!--******************** Feature ********************-->
+<!-- <div class="scrollblock"> -->
+<section id="feature">
+<div class="container">
+		<div id="img-carousel" class="carousel slide">
+
+	            <div class="carousel-inner">
+		              <div class="item active">
+			                <div class="image-pane">
+			                  <img img src="img/fbslide-1.png" alt="">
+			                </div>
+		              </div>
+		              <div class="item">
+			                <div class="image-pane">
+			                  <img img src="img/fbslide-2.png" alt="">
+			                </div>
+		              </div>
+		              <div class="item">
+			                <div class="image-pane">
+			                  <img img src="img/fbslide-3.png" alt="">
+			                </div>
+		              </div>
+		              <div class="item">
+			                <div class="image-pane">
+			                  <img img src="img/fbslide-4.png" alt="">
+			                </div>
+		              </div>
+
+	            </div>
+
+	            <ol class="carousel-indicators">
+	              <li data-target="#img-carousel" data-slide-to="0" class="active"></li>
+	              <li data-target="#img-carousel" data-slide-to="1"></li>
+	              <li data-target="#img-carousel" data-slide-to="2"></li>
+	              <li data-target="#img-carousel" data-slide-to="3"></li>
+	            </ol>
+
+	            <a class="carousel-control right" href=".carousel" data-slide="next">&rsaquo;</a>
+	            <a class="carousel-control left" href=".carousel" data-slide="prev">&lsaquo;</a>
+
+				<script type="text/javascript">
+				$(function(){
+				    $('.carousel').carousel({
+				      interval: 3000
+				    });
+				});
+				</script>
+
+			</div><!--img-carousel-->
+	</div><!--container-->
+</section>
+<!-- </div> -->
+<!-- <hr style="background-color:#fff"> -->
+
+<!--******************** Features Section ********************-->
+<section id="featuresdetail1" class="single-page scrollblock" style="background-color:#a18f6f;">
+<!-- <a class="anchor" id="services-link"></a> -->
+<div class="container">
+<div class="headline">Features</div>
+<!-- Four columns -->
+	<div class="row-fluid">
+
+  <div class="span4">
+    <div class="mask2"> <img src="img/fb_feat_img-04_n.png" alt=""></a> </div>
+    <div class="inside">
+        <h3>Matches, Statistics &amp; Live Streams</h3>
+      <div class="entry-content">
+        <p>The application was designed to provide quick and easy access to the major events of the championship: calendar of matches, fixture list, fresh charts of the top-scored shooters and most rude bullies. And above all, it supported real-time text streams of football matches.</p>
+      </div>
+    </div>
+    <!-- /.inside -->
+  </div>
+  <!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> <img src="img/fb_feat_img-03_n.png" alt=""></a> </div>
+    <div class="inside">
+        <h3>News &amp; Headlines</h3>
+      <div class="entry-content">
+        <p>In partnership with Korrespondent.net the app placed fresh news of the most thrilling football events of EURO 2012. In addition, handy announcements of the upcoming matches right on the starting screen insured that users would never miss the long-expected game.</p>
+      </div>
+    </div>
+    <!-- /.inside -->
+  </div>
+  <!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> <img src="img/fb_feat_img-02_n.png" alt=""></a> </div>
+    <div class="inside">
+        <h3>History &amp; Facts</h3>
+      <div class="entry-content">
+        <p>"Football 2012" was designed to keep users engaged even when nothing was going on on the field. The app included built-in information about the history and reality of the championship: dates, heroes, teams, stadiums, medals and more.</p>
+      </div>
+    </div>
+    <!-- /.inside -->
+  </div>
+  <!-- /.span4 -->
+</div>
+<!-- /.row -->
+</div>
+<!-- /.container -->
+</section>
+
+
+<div class="footer-wrapper">
+<footer>
+  <small>&copy; 2010-2016 Letiko. All rights  reserved.</small>
+</footer>
+</div>
+<!-- Loading the javaScript at the end of the page -->
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/jquery.prettyPhoto.js"></script>
+<script type="text/javascript" src="js/site.js"></script>
+</body>
+</html>

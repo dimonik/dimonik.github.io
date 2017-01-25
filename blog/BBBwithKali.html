@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Устанавливаем Kali на микрокомпьютер BeagleBoneBlack</title>
+		<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">09 июня 2016</div>
+<h1>Устанавливаем Kali на микрокомпьютер BeagleBoneBlack</h1>
+<hr>
+<img src="../img/Kali-linux.png">
+<p><a href="https://www.kali.org">Kali linux</a> это дистрибутив предназначенный для оценки безопасности компьютерных систем и сетей. Если его установить на микрокомпьютер то выезды на работу к заказчику становятся гораздо легче, ведь такой компьютер можно даже оставить на объекте, а управлять им удаленно.</p>
+<p><a href="https://www.element14.com/community/docs/DOC-54121">BeagleBoneBlack</a> - это компьютер выполненный в виде платы со всем необходимым для работы. Начинка у него весьма способная:</p>
+<img src="../img/BeagleBoneBlack.png">
+<ul>
+<li>Процессор: 1 GHz ARM Cortex-A8</li>
+<li>ОЗУ: 512MB DDR3L 800MHZ</li>
+<li>ПЗУ: 4GB</li>
+</ul>
+
+<p>Сегодня мы настроим BeagleBoneBlack на работу под управлением Kali.</p>
+<br /><br />
+
+<b>Вам понадобятся:</b><br />
+<ul>
+<li>ПК под управлением Ubuntu или другого Linux-дистрибутива</li>
+<li>Микрокомпьютер BeagleBoneBlack</li>
+<li>Источник питания 5v miniUSB</li>
+<li>Карта microSD минимум на 8 ГБ</li>
+<li>Ethernet-кабель для подключения микрокомпьютера к маршрутизатору</li>
+</ul>
+
+<br /><br />
+
+<a href="https://www.offensive-security.com/kali-linux-arm-images/">Скачайте архив</a> системы Kali linux для BeagleBoneBlack.<br />
+В табличке возле ссылки на скачивание находится столбец SHA1Sum, скопируйте его себе в блокнот, он нам понадобится.<br />
+<br />
+По окончании загрузки откройте приложение Terminal и перейдите в папку с загруженным файлом.<br />
+<pre>
+$ cd ~/Downloads
+</pre>
+Давайте проверим хеш этого файла и сравним его с тем что мы записали. Выполните команду:<br />
+<pre>
+$ sha1sum kali-2.1.2-bbb.img.xz
+349ab08be15196d83d640fc46482771f2f6c790f  kali-2.1.2-bbb.img.xz
+</pre>
+Совпало с тем что на сайте?<br />
+Если да то можно двигаться дальше. А вот если несовпало то стоит заново скачать и лучше через другого провайдера.<br />
+<br />
+Распакуем образ из архива, на вашем ПК выполните команду:<br />
+<pre>
+$ unxz kali-2.1.2-bbb.img.xz
+</pre>
+Должен получиться файлик kali-2.1.2-bbb.img размером 7.3 ГБ.<br />
+<br />
+Теперь надо узнать имя которое система назначила карте памяти. Выполните:<br />
+<pre>
+$ df -h
+</pre>
+Вы увидите список всех смонтированных файловых систем на вашем ПК.<br />
+Вставьте карту памяти microSD в ваш ПК.<br />
+Снова выполните команду<br />
+<pre>
+$ df -h
+</pre>
+Видите разницу? В списке появилась файловая система карты памяти. Если не появилась - отформатируйте карту памяти на другом ПК и создайте на ней один раздел.<br />
+<br />
+В нашем случае карта памяти выглядела вот так<br />
+<pre>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk0p1   15G  2.6M   15G   1% /media/username/SD
+</pre>
+Только вот mmcblk0p1 это имя раздела, а нам нужно узнать имя самого устройства. Выполним:<br />
+<pre>
+$ dmesg | tail
+</pre>
+Ищем строки похожие на информацию о вставленной карте памяти:<br />
+<pre>
+[ 1605.115322] mmc0: new ultra high speed SDR50 SDHC card at address 59b4
+[ 1605.115489] mmcblk0: mmc0:59b4 SD    14.7 GiB 
+[ 1605.116978] mmcblk0: p1
+</pre>
+Отсюда видно что имя устройства - mmcblk0.<br />
+<br />
+
+Сейчас нам понадобится крошечная утилита, выполните:<br />
+<pre>
+$ sudo apt-get update
+$ sudo apt-get install pv
+</pre>
+<br />
+Итак карта памяти вставлена, имя карты в системе известно, архив с образом распакован. Теперь можно записать образ с Kali на карту памяти:<br />
+<pre>
+$ sudo dd bs=512k if=kali-2.1.2-bbb.img | pv | sudo dd of=/dev/mmcblk0
+</pre>
+Начнется копирование образа .img на карту памяти, а благодаря утилите pv вы видите сколько уже скопировано и вообще идет ли процесс.<br />
+Когда процесс записи завершен, выполните отмонтирование карточки:<br />
+<pre>
+$ sudo umount /dev/mmcblk0p1
+</pre>
+Теперь можно ее вынуть и вставить в BeagleBoneBlack.<br />
+Подключите микрокомпьютер к маршрутизатору,<br />
+а также присоедините к нему блок питания.<br />
+Включаем в розетку!<br />
+<br />
+BeagleBoneBlack получит питание и начнет загрузку ОС с карты памяти.<br />
+Маршрутизатор ему назначит IP адрес используя протокол DHCP.<br />
+<br />
+Как узнать какой IP адрес теперь у BeagleBoneBlack?<br />
+Воспользуемся утилитой Zenmap, выполните:<br />
+<pre>
+$ sudo apt-get install zenmap
+</pre>
+Запустим zenmap и просканируем сеть. Настройте его как указано:<br />
+<pre>
+Target: 192.168.1.1-254 (диапазон адресов локальной сети в которую подключен микрокомпьютер)
+Profile: Ping scan
+</pre>
+Жмите кнопку Scan.<br />
+Через некоторое время в списке слева виден хост с именем beaglebone. Это и есть наш товарищ. Запишите его IP адрес.<br />
+<br />
+Выполним подключение:<br />
+<pre>
+$ ssh root@192.168.1.33
+</pre>
+Если строка приглашения изменилась на<br />
+<pre>
+root@beaglebone:~#
+</pre>
+Тогда вы успешно зашли на BeagleBoneBlack.<br />
+<br />
+<br />
+НАСТРОЙКА<br />
+<br />
+Ваше 1ое действие это СМЕНИТЬ ПАРОЛЬ. Выполните:<br />
+<pre>
+# passwd
+</pre>
+Введите новый пароль дважды и нажмите Enter.<br />
+<br />
+
+Откройте источники репозиториев:<br />
+<pre>
+# nano /etc/apt/sources.list
+</pre>
+Стрелками перейдите к строке<br />
+<pre>
+deb [arch=armhf] http://debian.beagleboard.org/packages wheezy-bbb main
+</pre>
+И поставьте символ # в ее начале (что приведет к ее отключению).<br />
+Нажмите сохранить Ctrl+O и выйти Ctrl+X.<br />
+<br />
+Выполните обновление списка доступных приложений:<br />
+<pre>
+# apt-get update
+</pre>
+Если сборка Kali запылилась, то выдаст ошибки вида:<br />
+<pre>
+W: There is no public key available for the following key IDs:
+</pre>
+Для исправления этой неприятности следует получить новые ключи разработчиков:<br />
+<pre>
+# aptitude -y install debian-archive-keyring debian-keyring
+</pre>
+Снова сделайте обновление списка доступных к установке и установленных пакетов:<br />
+<pre>
+# apt-get update & apt-get upgrade -y
+</pre>
+
+
+Что же, на этом установка Kali linux завершена, пора исследовать на что она способна ;)<br />
+<br />
+<br />
+P.S. Так как Kali основана на Debian то много полезных настроек можно найти <a href="http://elinux.org/Beagleboard:BeagleBoneBlack_Debian">вот здесь</a>.<br />
+<br />
+<br />
+<br />
+
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>

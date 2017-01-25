@@ -1,0 +1,300 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Устанавливаем ОС Debian на микрокомпьютер BeagleBoneBlack</title>
+
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">9 августа 2016</div>
+<h1>Устанавливаем ОС Debian на микрокомпьютер BeagleBoneBlack</h1>
+<hr>
+<img src="../img/debian-logo.jpg">
+<p><a href="https://www.kali.org">Debian</a> это один из самых популярных GNU/Linux дистрибутивов для компьютеров, ключевой особенностью которого есть большое количество доступных программ.</p>
+<p><a href="https://www.element14.com/community/docs/DOC-54121">BeagleBoneBlack</a> - это компьютер выполненный в виде платы со всем необходимым для работы. Начинка у него весьма способная:</p>
+<img src="../img/BeagleBoneBlack.png">
+<ul>
+<li>Процессор: 1 GHz ARM Cortex-A8</li>
+<li>ОЗУ: 512MB DDR3L 800MHZ</li>
+<li>ПЗУ: 4GB</li>
+</ul>
+
+<p>Сегодня мы настроим BeagleBoneBlack на работу под управлением Debian.</p>
+<br /><br />
+
+<h3>Вам понадобятся:</h3><br />
+<ul>
+<li>ПК под управлением Ubuntu или другого Linux-дистрибутива</li>
+<li>Микрокомпьютер BeagleBoneBlack</li>
+<li>Источник питания 5v miniUSB</li>
+<li>Карта microSD минимум на 2 ГБ</li>
+<li>Ethernet-кабель для подключения микрокомпьютера к маршрутизатору</li>
+</ul>
+
+<br /><br />
+
+<h3>История</h3>
+<p>Известно 2 источника ОС Debian специально подготовленной для BBB.
+<ul>
+<li><a href="http://rcn-ee.com/rootfs/">Первый</a>, авторства <a href="https://github.com/RobertCNelson?tab=repositories">Robert Nelson</a>, был спроектирован так чтобы потреблять минимум ресурсов машины и дать возможность другим программистам строить свои варианты системы. Этот дистрибутив также поддерживает другие одноплатные компьютеры.</li>
+<li><a href="https://beagleboard.org/latest-images">Второй</a>, это вариация первого сделанная для компании <a href="http://circuitco.com">CircuitCo</a> для поставки в качестве стандартной прошивки BBB. Она заменяет устаревший образ Angstrom Linux и проектировалась легкой для использования новичком сразу "из коробки".</li>
+</ul>
+Наш выбор - это первый вариант, ведь чем меньше ресурсов потребляет ОС тем больше достанется нашим приложениям.
+
+</p>
+
+<h3>Действия</h3>
+Идем <a href="http://rcn-ee.com/rootfs/">сюда</a>, выбираем новейшую дату, например "2016-06-09",
+заходим туда, и дальше надо сделать выбор:
+<ul>
+<li>если нужно чтобы ОС жила на карте памяти MicroSD - то выбираем папку microsd</li>
+<li>если нужно чтобы ОС жила на внутренней eMMC флеш-памяти - то выбираем папку flasher</li>
+</ul>
+Переходим в выбранную папку.<br />
+В появившемся списке файлов, ищем тот который содержит слова flasher, debian, и заканчивается как .img.xz<br />
+<br />
+Нашли?<br />
+Теперь <a href="http://rcn-ee.com/rootfs/2016-06-09/flasher/BBB-eMMC-flasher-debian-8.5-console-armhf-2016-06-09-2gb.img.xz">скачайте выбранный архив</a> системы Debian GNU/Linux для BeagleBoneBlack.<br />
+В списке файлов также находится один с точно таким же именем но с окончанием .sha256sum, скачайте и его, он нам понадобится.<br />
+<br />
+По окончании загрузки архива и файлика с хеш-кодом откройте приложение Terminal и перейдите в папку с загруженным файлом.<br />
+<pre>
+$ cd ~/Downloads
+</pre>
+Давайте проверим хеш этого файла и сравним его с тем что мы записали. Выполните команду:<br />
+<pre>
+sha256sum -c BBB-eMMC-flasher-debian-8.5-console-armhf-2016-06-09-2gb.img.xz.sha256sum
+</pre>
+Выдало ОК?<br />
+Если да то можно двигаться дальше. А вот если выдало
+<pre>
+BBB-eMMC-flasher-debian-8.5-console-armhf-2016-06-09-2gb.img.xz: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+</pre>
+то стоит заново скачать архив и лучше через другого провайдера.<br />
+<br />
+Распакуем образ из архива, на вашем ПК выполните команду:<br />
+<pre>
+$ unxz BBB-eMMC-flasher-debian-8.5-console-armhf-2016-06-09-2gb.img.xz
+</pre>
+Должен получиться файлик BBB-eMMC-flasher-debian-8.5-console-armhf-2016-06-09-2gb.img размером 1.8 ГБ.<br />
+<br />
+
+<h3>Запись на MicroSD</h3>
+Есть два пути как записать образ на карту памяти: простой, используя <a href="https://www.etcher.io/">программу</a> или путь гуру, вам выбирать как ;)<br />
+Следуя пути гуру, выполните:<br />
+<pre>
+$ df -h
+</pre>
+Вы увидите список всех смонтированных файловых систем на вашем ПК.<br /><br />
+Теперь, вставьте карту памяти MicroSD в ваш ноутбук.<br />
+Надо узнать имя которое система назначила этой карте памяти. 
+Снова выполните команду<br />
+<pre>
+$ df -h
+</pre>
+Видите разницу? В списке появилась файловая система карты памяти. Если не появилась - отформатируйте карту памяти на другом ПК и создайте на ней один раздел, а затем снова вставьте в свой ноутбук.<br />
+<br />
+В нашем случае карта памяти выглядела вот так<br />
+<pre>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk0p1   2G  2.6M  1.99G   1% /media/username/SD
+</pre>
+Только вот mmcblk0p1 это имя раздела, а нам нужно узнать имя самого устройства. Выполним:<br />
+<pre>
+$ dmesg | tail
+</pre>
+Ищем строки похожие на информацию о вставленной карте памяти:<br />
+<pre>
+[ 671.315322] mmc0: new ultra high speed SDR50 SDHC card at address 59b4
+[ 671.315489] mmcblk0: mmc0:59b4 SD    2 GiB 
+[ 671.316978] mmcblk0: p1
+</pre>
+Отсюда видно что имя устройства - mmcblk0.<br />
+<br />
+
+Скоро нам понадобится крошечная утилита pv, установите ее:<br />
+<pre>
+$ sudo apt-get update
+$ sudo apt-get install pv
+</pre>
+Итак карта памяти вставлена, имя карты в системе известно, архив с образом распакован.<br />
+Выполните отмонтирование карточки:<br />
+<pre>
+$ sudo umount /dev/mmcblk0p1
+</pre>
+Теперь можно записать образ с Debian на карту памяти:<br />
+<pre>
+$ sudo dd bs=512k if=BBB-eMMC-flasher-debian-8.5-console-armhf-2016-06-09-2gb.img | pv | sudo dd of=/dev/mmcblk0
+</pre>
+Начнется копирование образа .img на карту памяти, а благодаря утилите pv вы видите сколько уже скопировано и вообще идет ли процесс.<br />
+Когда процесс записи будет завершен, можно вынуть карту и вставить ее в BeagleBoneBlack.
+<br /><br />
+
+
+<h3>Инсталляция в eMMC</h3>
+Во многих руководствах сказано что нужно нажать и удерживать кнопку S2 и одновременно подать питание - это якобы запустит процесс загрузки с MicroSD.<br />
+<img src="../img/bbb_s2_button.jpg"><br />
+У нас официальный экземпляр от <a href="https://www.element14.com">element14</a>, но у него для загрузки с карты зажимать кнопку S2 <b>НЕ НУЖНО</b>.<br />
+<br />
+Итак:<br />
+<ol>
+<li>вставляем карту MicroSD в BBB, а питание подаем через miniUSB кабель от ноутбука;</li>
+<li>ждем;</li>
+<li>загорятся все четыре светодиода "user LEDs" одновременно;</li>
+<li>грузится;</li>
+<li>начнет бегать огонек на 4 светодиодах согласно шаблону <a href="https://www.youtube.com/watch?v=C1MKO3CHWDQ&t=0m50s">cylon sweep</a>;</li>
+<li>ждем;</li>
+<li>загорятся все 4 светодиода одновременно;</li>
+<li>через секунды BBB сам уйдет в режим "питание отключено";</li>
+<li>отключаем питание;</li>
+<li>вынимаем MicroSD.</li>
+</ol>
+Поздравляем, ваш BeagleBoneBlack прошит!<br />
+<br />
+
+
+<h3>Первый старт</h3>
+Подключите микрокомпьютер к маршрутизатору, подайте питание.<br />
+BBB начнет загрузку Debian со встроенной флеш-памяти eMMC.<br />
+Через некоторое время маршрутизатор ему назначит IP адрес используя протокол DHCP.<br />
+<br />
+Как узнать какой IP адрес теперь у BeagleBoneBlack?<br />
+Воспользуемся утилитой Zenmap, выполните:<br />
+<pre>
+$ sudo apt-get install zenmap
+</pre>
+Запустим на ноутбуке zenmap и просканируем сеть. Настройте его как указано:<br />
+<pre>
+Target: 192.168.1.1-254 (диапазон адресов локальной сети в которую подключен микрокомпьютер)
+Profile: Ping scan
+</pre>
+Жмите кнопку Scan.<br />
+Через некоторое время в списке слева виден хост с именем <b>arm</b>. Это и есть наш товарищ. Запишите его IP адрес.<br />
+<br />
+Выполним подключение:<br />
+<pre>
+$ ssh debian@192.168.1.59
+</pre>
+Вводим пароль "temppwd". Если строка приглашения изменилась на<br />
+<pre>
+debian@arm:~#
+</pre>
+Тогда вы успешно зашли на BeagleBoneBlack.<br />
+Проверить что вы установили правильный образ Debian можно выполнив:
+<pre>
+$ sudo cat /etc/dogtag
+[sudo] password for debian: 
+rcn-ee.net console Debian Image 2016-06-09
+</pre>
+Выдаст что у вас образ от rcn-ee.net датированный 9 июня 2016, как раз так и должно быть.
+<br />
+<br />
+
+<h3>НАСТРОЙКА Debian Jessie</h3>
+Ваше 1ое действие это СМЕНИТЬ ПАРОЛЬ. Выполните:<br />
+<pre>
+$ passwd
+</pre>
+Введите новый пароль дважды и нажмите Enter.<br />
+<br />
+
+По-умолчанию в образах Debian от rcn-ee сделано так:<br />
+Вход пользователя root разрешен, но пароль для него задан пустой, "root login allowed but password is blank", что делает вход суперпользователя через пароль невозможным. Лучше такое поведение изменить и задать пароль для root и в то же время заблокировать учетку суперпользователя:<br />
+<pre>
+$ sudo su
+# passwd --lock root
+# passwd
+# passwd -S
+root L 06/09/2016
+</pre>
+буква L означает что вы не сможете входить как root напрямую или использовать команду su чтобы переключиться на пользователя root.
+<a href="https://help.ubuntu.com/community/RootSudo">Больше знаний о суперпользователе</a>.
+<br /><br />
+
+Отредактируйте настройки демона SSH и установите такие значения:
+<pre>
+$ sudo nano /etc/ssh/sshd_config
+
+PermitRootLogin no
+PermitEmptyPasswords no
+</pre>
+
+Выполните обновление списка доступных приложений:<br />
+<pre>
+$ sudo apt-get update &amp; apt-get upgrade
+</pre>
+Смените имя микрокомпьютера в сети:<br />
+<pre>
+$ sudo nano /etc/hostname
+</pre>
+Вместо arm введите что-нибудь более понятное, например beaglebone.<br />
+<br />
+Отключите из автозапуска службу Avahi, она редко когда нужна:
+<pre>
+$ systemctl list-units | grep avahi
+avahi-daemon.service                                                                            loaded active running   Avahi mDNS/DNS-SD
+avahi-daemon.socket                                                                             loaded active running   Avahi mDNS/DNS-SD
+$ sudo systemctl disable avahi-daemon
+</pre>
+<br />
+
+<h3>НАСТРОЙКА Debian Wheezy</h3>
+Сделайте все шаги из настроек Jessie кроме ситуаций описанных ниже.<br />
+
+Откройте источники репозиториев:<br />
+<pre>
+# nano /etc/apt/sources.list
+</pre>
+Стрелками перейдите к строке<br />
+<pre>
+deb [arch=armhf] http://debian.beagleboard.org/packages wheezy-bbb main
+</pre>
+И поставьте символ # в ее начале (что приведет к ее отключению).<br />
+Нажмите сохранить Ctrl+O и выйти Ctrl+X.<br />
+<br />
+Выполните обновление доступных приложений:<br />
+<pre>
+# apt-get update
+</pre>
+Если сборка Debian запылилась, то выдаст ошибки вида:<br />
+<pre>
+W: There is no public key available for the following key IDs:
+</pre>
+Для исправления этой неприятности следует получить новые ключи разработчиков:<br />
+<pre>
+# aptitude -y install debian-archive-keyring debian-keyring
+</pre>
+Снова сделайте обновление списка доступных к установке и установленных пакетов:<br />
+<pre>
+# apt-get update &amp; apt-get upgrade -y
+</pre>
+
+<br />
+<br />
+P.S. О Debian много полезного можно найти по ссылкам:<br />
+<a href="http://elinux.org/Beagleboard:BeagleBoneBlack_Debian">Настройки и нюансы</a><br />
+<a href="http://elinux.org/BeagleBoardDebian">Установка</a><br />
+<br />
+<br />
+<br />
+
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>

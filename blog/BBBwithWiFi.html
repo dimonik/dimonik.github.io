@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>Подключаем Wi-Fi адаптер к микрокомпьютеру BeagleBoneBlack</title>
+		<!-- Yandex.Metrika counter -->
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">18 июня 2016</div>
+<h1>Подключаем Wi-Fi адаптер к микрокомпьютеру BeagleBoneBlack</h1>
+<hr>
+
+<img src="../img/tl-wn722n.jpg">
+
+<p>В прошлый раз <a href="http://letiko.com/blog/BBBwithKali.html">мы установили </a> Kali linux на микрокомпьютер <a href="https://www.element14.com/community/docs/DOC-54121">BeagleBoneBlack</a>.</p>
+
+
+<p>Сегодня мы настроим BeagleBoneBlack на работу с Wi-Fi адаптером TP-Link TL-WN722N.</p>
+<br />
+
+<b>Вам понадобятся:</b><br />
+<ul>
+<li>ПК под управлением Ubuntu или другого Linux-дистрибутива</li>
+<li>Микрокомпьютер BeagleBoneBlack</li>
+<li>Источник питания 5v miniUSB</li>
+<li>Карта microSD с уже установленной системой Kali linux</li>
+<li>Ethernet-кабель для подключения микрокомпьютера к маршрутизатору</li>
+<li>Wi-Fi адаптер TP-Link TL-WN722N</li>
+</ul>
+<br />
+Как для любого нового устройства, нам нужно установить управляющую им программу - драйвер.<br />
+<br />
+На вашем ПК, выполните подключение к BeagleBoneBlack:<br />
+<pre>
+$ ssh root@192.168.1.47
+</pre>
+После ввода пароля, вы вошли.
+<br /><br /><br />
+Первым делом обновите содержимое репозиториев:<br />
+<pre>
+# apt-get update
+</pre>
+<br />
+Установите нужные утилиты и набор драйверов:<br />
+<pre>
+# apt-get install usbutils wireless-tools firmware-atheros
+</pre>
+<br />
+Выполните опрос подключенных к микрокомпьютеру USB-устройств:<br />
+<pre>
+# lsusb
+</pre>
+Результат этой команды примерно будет таким:<br />
+<img src="../img/lsusb1.png">
+<br /><br />
+Теперь воткните Wi-Fi адаптер в свободный USB порт на BeagleBoneBlack.<br />
+И опять выполните:<br />
+<pre>
+# lsusb
+</pre>
+Результат:<br />
+<img src="../img/lsusb2.png">
+<br /><br />
+Видно что в списке подключенных устройств появился адаптер на микросхеме AR9271 от Atheros Communications, это и есть наш Wi-Fi. Если в списке не появилось ничего нового - нужно перезагрузить микрокомпьютер не вынимая из него адаптер.<br />
+<br /><br />
+В данный момент устройство уже готово к работе, но не помешает точно убедиться что драйвера установлены правильно.<br />
+Для этого нужно посмотреть есть ли упоминания микросхем Atheros в активных (загруженных в память) модулях ядра Linux.<br />
+Выполните:<br />
+<pre>
+# lsmod
+</pre>
+Результат этой команды примерно будет таким:<br />
+<img src="../img/lsmod.png">
+<br /><br />
+Видите различные строки начинающиеся на "ath"? Так и должно быть если все настроено правильно.<br />
+<br /><br />
+Включаем адаптер:<br />
+<pre>
+# ifconfig wlan0 up
+</pre>
+На адаптере должен загореться зеленый свет, это значит он успешно включился.<br />
+<br />
+Давайте посмотрим Wi-Fi сети вокруг:<br />
+<pre>
+# iwlist wlan0 scanning | egrep 'Cell |Encryption|Quality|Last beacon|ESSID'
+</pre>
+Эта хитрая команда выдаст список всех видимых Wi-Fi сетей вокруг.<br />
+<br /><br />
+В итоге мы получили микрокомпьютер оснащенный отличным дальнобойным Wi-Fi:<br />
+<img src="../img/tl-wn722n_with_BBB.jpg">
+<br /><br />
+Какие у этой штуки могут быть применения? Об этом мы и расскажем в ближайших публикациях.<br />
+<br />
+<br />
+<br />
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>

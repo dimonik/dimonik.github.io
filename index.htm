@@ -1,0 +1,389 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Letiko - Mobile Applications Software Development</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Letiko">
+<meta name="keywords" content="software outsourcing, software development, mobile applications, android applications, ios applications, security analysis"
+<!-- Styles -->
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link rel="stylesheet" href="inc/visualcaptcha.css" media="all" />
+<!--[if lt IE 7]>
+    <link href="css/fontello-ie7.css" type="text/css" rel="stylesheet">  
+<![endif]-->
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<!-- Favicon -->
+<link rel="shortcut icon" href="img/favicon.ico">
+<!-- JQuery -->
+<script type="text/javascript" src="js/jquery.js"></script>
+<!-- Load ScrollTo -->
+<script type="text/javascript" src="js/jquery.scrollTo-1.4.2-min.js"></script>
+<!-- Load LocalScroll -->
+<script type="text/javascript" src="js/jquery.localscroll-1.2.7-min.js"></script>
+<script type="text/javascript" src="js/touchTouch.jquery.js"></script>
+<script type="text/javascript" src="js/contacts_toggle.js"></script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter38288850 = new Ya.Metrika({
+                id:38288850,
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true
+            });
+        } catch(e) { }
+    });
+
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body> 
+<!--******************** Contact Section ********************-->
+<section id="contact">
+<a class="closeform" id="close_form">X</a>
+<div class="container">
+<div class="row-fluid">
+<div class="type-<?php echo $_FORM_TYPE; ?>">
+  <div class="span12">
+    <div class="row">
+      <div class="span5">
+        <h1>GET IN TOUCH</h1>
+        <h2>hello@letiko.com</h2>
+      </div>
+      <div class="span7">
+        <div class="cform" id="theme-form">
+          <!-- send/sendmail -->
+          <form action="index.php" method="post" name="cform-form" id="cform-form">
+            <input type="hidden" name="form_submit" value="1" readonly="readonly" />
+            <input type="hidden" name="css_type" value="<?php echo $_FORM_TYPE; ?>" readonly="readonly" />
+              <span class="your-email">
+                <input type="text" name="themail" placeholder="Your Email" class="cform-text" size="40" title="your email">
+                </span>
+              <span class="message">
+               <textarea name="themessage" placeholder="Drop us a line." class="cform-textarea" cols="40" rows="10" title="drop us a line."></textarea>
+                </span>
+            <!-- <?php
+              if ( ! empty($_GLOBAL_MSG) ) {
+            ?>
+                <h3><?php echo $_GLOBAL_MSG; ?></h3>
+            <?php
+              }
+            ?>
+            <?php printCaptcha('cform-form', $_FORM_TYPE ); ?> -->
+      </form>
+    </div>
+  </div>
+  <!-- ./span12 -->
+</div>
+<!-- /.row -->
+</div>
+<!-- </div> -->
+</div>
+</div>
+</div>
+<!-- /.container -->
+</section>
+<!--******************** NAVBAR ********************-->
+<div class="navbar-wrapper">
+<div class="navbar navbar-inverse navbar-fixed-top" id="navigation">
+<div class="navbar-inner">
+  <div class="container">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+    <h1 class="brand"><a href="#top"></a></h1>
+    <nav class="pull-right nav-collapse collapse">
+      <ul id="menu-main" class="nav">
+        <li><a title="portfolio" href="#portfolio-link">Portfolio</a></li>
+        <li><a title="services" href="#services-link">Services</a></li>
+        <li><a title="blog" href="#news-link">Blog</a></li>
+        <li><a title="team" href="#team-link">Team</a></li>
+        <li><a title="contact" href="#contact" id="contacts_toggle">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+  <!-- /.container -->
+</div>
+<!-- /.navbar-inner -->
+</div>
+<!-- /.navbar -->
+</div>
+<!-- /.navbar-wrapper -->
+<div id="top"></div>
+<!-- ******************** HeaderWrap ********************-->
+<section id="headerwrap">
+<header>
+<h1><b>Letiko</b>software creation done right</h1>
+</header>
+<video autoplay loop>
+        <source type="video/mp4" src="img/more.mp4"></source>
+        <source type="video/ogg" src="img/more.ogv"></source>
+</video>
+</section>
+<!--******************** Portfolio Section ********************-->
+<section id="portfolio" class="single-page scrollblock">
+<a class="anchor" id="portfolio-link"></a>
+<div class="container">
+<h1>We are friends who unite expertize in programming, design, and project management</h1>
+<h2>to make beautiful products for iOS, Android and other platforms.</h2>
+
+<div class="row-fluid">
+
+  <div class="span4">
+    <div class="mask2"> 
+      <a href="https://itunes.apple.com/gb/app/nyse-connect/id514944582?mt=8" target="_blank">
+        <img src="img/portfolio-07.png" alt="">
+        <div class="platforms"><div class="border"><p>iOS<br> application</p></div></div>
+      </a>
+    </div>
+  </div><!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> 
+      <a href="http://huntberry.com.ua" target="_blank">
+        <img src="img/portfolio-08.jpg" alt="">
+        <div class="platforms"><div class="border"><p>WEBSITE<br>html | css | js</p></div></div>
+      </a>
+    </div>
+  </div><!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> 
+      <a href="https://itunes.apple.com/us/app/snaps-get-creative-fun-photo/id600868427?mt=8" target="_blank">
+        <img src="img/portfolio-09.png" alt="">
+        <div class="platforms"><div class="border"><p>iOS<br> application</p></div></div>
+      </a>
+    </div>
+  </div><!-- /.span4 -->
+
+</div><!-- /.row -->
+
+
+<div class="row-fluid">
+
+  <div class="span4">
+    <div class="mask2"> 
+      <a href="football2012.html">
+        <img src="img/portfolio-04.jpg" alt="">
+        <div class="platforms"><div class="border"><p>iOS | ANDROID<br> application</p></div></div>
+      </a>
+    </div>
+  </div><!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> 
+      <a href="http://gearapp.challengepost.com/submissions/25075-dayswatch" target="_blank">
+        <img src="img/portfolio-05.png" alt="">
+        <div class="platforms"><div class="border"><p>TIZEN | ANDROID<br>watch application</p></div></div>
+      </a>
+    </div>
+  </div><!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> 
+      <a href="arsenale2012.html">
+        <img src="img/portfolio-06.jpg" alt="">
+        <div class="platforms"><div class="border"><p>ANDROID <br> application</p></div></div>
+      </a>
+    </div>
+  </div><!-- /.span4 -->
+
+</div><!-- /.row -->
+
+
+<div class="row-fluid">
+  <div class="span4">
+    <div class="mask2"> 
+      <a href="drivingrules.html">
+        <img src="img/portfolio-01.jpg" alt="">
+        <div class="platforms"><div class="border"><p>iOS | ANDROID | BADA <br> application</p></div></div>
+      </a>
+    </div>
+  </div><!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> 
+      <!-- <a href="#"> -->
+        <img src="img/portfolio-02.jpg" alt="">
+        <div class="platforms"><div class="border"><p>HUMAN RESOURCES ERP<br>java | web</p></div></div>
+      <!-- </a> -->
+    </div>
+  </div><!-- /.span4 -->
+
+  <div class="span4">
+    <div class="mask2"> 
+      <!-- <a href="#"> -->
+        <img src="img/portfolio-03.jpg" alt="">
+        <div class="platforms"><div class="border"><p>Wireframes for iOS<br>application</p></div></div>
+      <!-- </a> -->
+    </div>
+  </div><!-- /.span4 -->
+
+</div><!-- /.row -->
+
+</div><!-- /.container -->
+</section>
+
+
+<!--******************** Services Section ********************-->
+<section id="services" class="single-page scrollblock">
+<a class="anchor" id="services-link"></a>
+<div class="container">
+<div class="headline">Services</div>
+<div class="row-fluid">
+  <div class="span12">
+    <h3>Coding</h3>
+    <p>Have you got a superior idea, but still need bright minds and trained brains to make it come true? We created apps for iPhone and iPad, Android, for smartphones and tablets, Websites, introduced client-server solutions and engaging animation. We'll be happy to join your team as Web | iOS | Android developers and invest our knowledge and experience into your project.</p>
+    <h3>Mobile Apps</h3>
+    <p>Letiko is our space to create apps for iOS, Android, and other mobile platforms. We are happy to make one for you: work out the Idea and Concept, develop Information Architecture and Interaction Design, draw Visual Design, do the Coding part, finally - help to publish the app to the market and support it as long as you need.</p>
+    <h3>Websites</h3>
+    <p>Out team is here to help you stand out from the crowd. When it comes to websites, we provide full-service solutions consisting of planning, creative services,  back-end systems, front-end development, and responsive design. Whether your website is an extension of your current offerings or a brand new tool,  we'll make it easy to get started and provide you with needed expertise.</p>
+    <h3>UX | UI design</h3>
+    <p>We are enthusiastic over beautiful and powerful, yet easy to use mobile and web products. Being at the heart of application development we indentify, try and analyze every meaningful archirectural solution that exists on the market. This knowledge and experience helps us introduce smart design suggestions that would work best in your project.</p>
+    <h3>Backend Setup</h3>
+    <p>We posess strong knowledge of computer | server | network organization and architecture. Our team includes Cisco and Microsoft certified specialists boasting up to 10 year experience in administrating business computer networks. We are ready to provide our support to your business, helping to make it stable and secure.</p>
+  </div>
+  <!-- /.span12 -->
+</div>
+<!-- /.row -->
+</div>
+<!-- /.container -->
+</section>
+<!--******************** News Section ********************-->
+<section id="news" class="single-page scrollblock">
+<a class="anchor" id="news-link"></a>
+<div class="container">
+<div class="headline">Blog</div>
+<!-- Three columns -->
+<div class="row-fluid">
+  <article class="span4 post"> 
+    <div class="inside">
+      <p class="post-date"><i class="icon-calendar"></i> April 14, 2013</p>
+      <a href="blog/articles/3.html" target="_blank">
+      <h2>Begin AVR assembly programming</h2>
+      <img class="img-news" src="img/arduino.png" alt="">
+      <div class="entry-content">
+        <p>Recently our collection of devices was joined by two Arduino boards: Uno and Mega. We thought that programming it using native Arduino infrastructure is utterly boring, and thus decided to set our sights on Assembler.. &hellip;</p>
+      </div>
+      </a>
+    </div>
+    <!-- /.inside -->
+  </article>
+  <!-- /.span4 -->
+  <article class="span4 post"> 
+    <div class="inside">
+      <p class="post-date">February 05, 2013</p>
+      <a href="http://letiko.com/blog/infosearch.html" target="_blank">
+      <h2>Evolution of the Information Search</h2>
+      <img class="img-news" src="img/magnifier.png" alt="">
+      <div class="entry-content">
+        <p>Today we see new patterns of how people may get information. Such technologies as Apple Siri, Google Now, Google Knowledge Graph and Yandex Ostrova ("Islands") emerged &hellip;</p>
+      </div>
+    </a>
+    </div>
+    <!-- /.inside -->
+  </article>
+  <!-- /.span4 -->
+  <article class="span4 post">
+    <div class="inside">
+      <p class="post-date">January 19, 2013</p>
+      <a href="http://www.businessinsider.com/the-future-of-mobile-slide-deck-2013-3?op=1" target="_blank">
+      <h2>The Future of Mobile</h2>
+      <img class="img-news" src="img/phone.png" alt="">
+      <div class="entry-content">
+        <p>Very interesting research was shared by Business Insider: a close look at the growth of smartphone and tablet adoption, the platform wars, and how consumers are actually using their devices &hellip;</p>
+      </div>
+      </a>
+    </div>
+    <!-- /.inside -->
+  </article>
+  <!-- /.span4 -->
+</div>
+<!-- /.row -->
+<a href="http://letiko.com/blog" target="_blank" class="btn btn-large">Go to our blog</a> 
+</div>
+<!-- /.container -->
+</section>
+<hr>
+<!--******************** Team Section ********************-->
+<section id="team" class="single-page scrollblock">
+<a class="anchor" id="team-link"></a>
+<div class="container">
+<div class="headline">Meet the team</div>
+<div class="row-fluid">
+
+  <div class="span2 offset2">
+    <div class="teamalign"> <img class="team-thumb img-circle" src="img/portrait-1.png" alt=""></div>
+    <h3>Dima Nikandrov</h3>
+    <div class="job-position">founder,&nbsp;<br />head&nbsp;of&nbsp;engineering</div>
+  </div><!-- ./span2 -->
+
+  <div class="span2">
+    <div class="teamalign"> <img class="team-thumb img-circle" src="img/portrait-4.jpg" alt=""></div>
+    <h3>Andrey Nikandrov</h3>
+    <div class="job-position">business&nbsp;development</div>
+  </div><!-- ./span2 -->
+
+  <div class="span2">
+    <div class="teamalign"> <img class="team-thumb img-circle" src="img/portrait-2.jpg" alt=""></div>
+    <h3>Katerina Vinogradnaya</h3>
+    <div class="job-position">engineer<br />iOS&nbsp;/&nbsp;web</div>
+  </div><!-- ./span2 -->
+
+  <div class="span2">
+    <div class="teamalign"> <img class="team-thumb img-circle" src="img/portrait-3.jpg" alt=""></div>
+    <h3>Dima Kudriavtsev</h3>
+    <div class="job-position">engineer<br />backend&nbsp;/&nbsp;java</div>
+  </div><!-- ./span2 -->
+
+</div>
+<!-- /.row -->
+<div class="row-fluid">
+  <div class="span10 offset1">
+    <hr class="featurette-divider">
+    <div class="featurette">
+      <h2 class="featurette-heading">Want to know more? <span class="muted">| a little about us</span></h2>
+      <p>We are here to help you create your website or mobile application. Being beautiful and meaningful, it will become additional sales and marketing platform for your product or company brand, provide instant feedback from customers, add to the image of your company as innovator, keep up customers loyalty, bring positive media interest and more.</p>
+      <p>We are proud of our knowledge of IT technologies, focus on details and responsible approach to every task! We chase perfection and try to be the change we want to see in the world.</p>
+    </div>
+    <!-- /.featurette -->
+  </div>
+  <!-- .span10 -->
+</div>
+<!-- /.row -->
+</div>
+<!-- /.container -->
+</section>
+<hr>
+<div class="footer-wrapper">
+<footer>
+  <small>&copy; 2010-2016 Letiko. All rights reserved.</small>
+</footer>
+</div>
+<!-- Loading the javaScript at the end of the page -->
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/site.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="inc/visualcaptcha.js"></script>
+</body>
+</html>
+
