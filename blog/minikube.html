@@ -72,7 +72,7 @@
                 <img src="../img/minikube_boot2docker.png"><br><br>
                 
                 <p>Следующим шагом будет упаковка и запуск приложения. Воспользуемся уже готовым spring-проектом.</p>
-                <pre># git clone https://github.com/dimonik/minikube.git<br># cd minikube<br># mvn package</pre>
+                <pre># git clone https://github.com/dimonik/spring_hello_app.git<br># cd minikube<br># mvn package</pre>
                 
                 <p>Заходим в папку <i>/minikube/target</i> и создаём файл с названием <i>'Dockerfile'</i>, который должен содержать в себе следующее:</p>
                 <pre>FROM java:8<br>MAINTAINER Letiko letiko@letiko.com<br>ADD tutorial-0.0.1-SNAPSHOT.jar tutorial.jar<br>EXPOSE 8080<br>ENTRYPOINT ["java","-jar","tutorial.jar"]</pre>

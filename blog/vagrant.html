@@ -74,7 +74,7 @@
                 <p>Команда сгенерирует для нас Vagrant файл, в котором нужно поменять значение поля '<i>config.vm.box</i>' на <i>"centos/7" и добавить поле 'config.vm.network "forwarded_port", guest: 8080, host: 8080'</i>, что позволит нам получить доступ к приложению снаружи среды.</p>
                 
                 <p>Теперь мы можем запускать Vagrant, но сначала подготовим наше приложение. Возьмём готовый проект, который мы использовали в туториале про <a href="#">Minikube</a>. В папке с файлом 'Vagrant' выполняем:</p>
-                <pre>$ git clone https://github.com/dimonik/vagrant_tutorial.git<br>$ cd vagrant_tutorial<br>$ mvn package</pre>
+                <pre>$ git clone https://github.com/dimonik/spring_hello_app.git<br>$ cd vagrant_tutorial<br>$ mvn package</pre>
                 
                 <p>Переходим в директорию '<i>/minikube/target</i>' и создаём файл с названием <i>'Dockerfile'</i>, который должен содержать в себе следующее:</p>
                 <pre>FROM java:8<br>MAINTAINER Letiko <hello@letiko.com><br>ADD tutorial-0.0.1-SNAPSHOT.jar tutorial.jar<br>EXPOSE 8080<br>ENTRYPOINT ["java","-jar","tutorial.jar"]</pre>
