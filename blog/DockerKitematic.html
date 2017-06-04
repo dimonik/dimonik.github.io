@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/blog.css" />
+		<title>How-to install Kitematic on Linux Ubuntu 16.04</title>
+		<!-- Yandex.Metrika counter
+		<script type="text/javascript">
+		(function (d, w, c) {
+		    (w[c] = w[c] || []).push(function() {
+			try {
+			    w.yaCounter38288850 = new Ya.Metrika({
+				id:38288850,
+				clickmap:true,
+				trackLinks:true,
+				accurateTrackBounce:true
+			    });
+			} catch(e) { }
+		    });
+
+		    var n = d.getElementsByTagName("script")[0],
+			s = d.createElement("script"),
+			f = function () { n.parentNode.insertBefore(s, n); };
+		    s.type = "text/javascript";
+		    s.async = true;
+		    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+		    if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		    } else { f(); }
+		})(document, window, "yandex_metrika_callbacks");
+		</script>
+		<noscript><div><img src="https://mc.yandex.ru/watch/38288850" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+		<!-- /Yandex.Metrika counter --> -->
+	</head>
+	
+	<body>
+		<div class="page">
+			<div class="container">
+				<div class="header">
+					<a href="http://letiko.com/blog/index.html" class="header-element">
+						Home
+					</a>
+				</div>
+<div class="published">04 июня 2017</div>
+<h1>How-to install Kitematic on Linux Ubuntu 16.04</h1>
+<hr>
+<p><img src="../img/Kitematic-Logo.png"></p>
+
+<p><a href="https://kitematic.com/">Kitematic</a> это инструмент с удобным графическим интерфейсом предназначенный для работы с контейнерами Docker. Официально, почему-то он для Linux не поставляется, хотя препятствий для работы на нашей ОС быть не может - ведь это веб-приложение. Давайте сейчас исправим эту несправедливость.</p>
+<br />
+<b>Вам нужно выполнить эти шаги:</b><br />
+<ol>
+<li>install docker</li>
+<li>sudo usermod -aG docker $USER</li>
+<li>reboot</li>
+<li>install NodeJS</li>
+<li>sudo apt-get install build-essential libcanberra-gtk-module</li>
+<li>git clone https://github.com/docker/kitematic.git</li>
+<li>cd kitematic</li>
+<li>make</li>
+<li>from kitematic folder, run 'npm start' (this will run the app)</li>
+</ol>
+<br /><br />
+<p>
+<h3>Автор</h3>
+&copy; Dmytro Nikandrov<br />
+</p>
+			</div>
+		</div>
+	</body>
+</html>
